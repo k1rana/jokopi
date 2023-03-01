@@ -1,0 +1,26 @@
+{
+  "name": "jokopi",
+  "version": "1.0.0",
+  "description": "Backend for jokopi website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justcallmeahann/jokopi.git"
+  },
+  "keywords": [
+    "jokopi",
+    "kopi",
+    "kafe",
+    "coffee",
+    "cafe"
+  ],
+  "author": "ahann",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/justcallmeahann/jokopi/issues"
+  },
+  "homepage": "https://github.com/justcallmeahann/jokopi#readme"
+}
