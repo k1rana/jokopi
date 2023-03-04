@@ -1,12 +1,14 @@
-import { Router } from "express";
+import express from 'express';
 
-import { getProducts, getProductDetail, insertProducts } from "../controllers/products.controller";
+import productController from '../controllers/products.controller.js';
 
-const productsRouter = Router();
+const productsRouter = express.Router();
 
-productsRouter.post("/", insertProducts); // create
-productsRouter.get("/", getProducts); // read
-// productsRouter.get("/:productId", getProductDetail); // update
-productsRouter.get("/:productId", getProductDetail); // read
+productsRouter.post('/', productController.store); // create
+productsRouter.get('/', productController.index); // read
+
+productsRouter.get('/:productId', productController.show); // read
+productsRouter.put('/:productId', productController.update); // update
+productsRouter.delete('/:productId', productController.destroy); // delete
 
 export default productsRouter;

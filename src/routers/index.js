@@ -1,10 +1,11 @@
-import { Router } from "express";
+import express from 'express';
 
-import productsRouter from "./products.route";
-// routes
-const routers = Router();
-// Router.use("/", productsRouter);
+// route files
+import productsRouter from './products.route.js';
 
-Router.use("/products", productsRouter); // products
+// routes from express
+const routers = express.Router();
+
+routers.use('/products', productsRouter); // products
 
 export default routers;
