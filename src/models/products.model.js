@@ -21,6 +21,7 @@ function index(req) {
     if (req.query.searchByName !== undefined) {
       searchSql = '%'+req.query.searchByName+'%';
     }
+    const limit = `LIMIT ${!isNaN(req.query.limit) ? req.query.limit : 10}`;
     const sql = `SELECT 
     p.id, 
     p.name, 
@@ -29,7 +30,8 @@ function index(req) {
     c.name AS category_name FROM products p 
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.name ILIKE $1
-    ORDER BY ${sortColumn} ${sort}`;
+    ORDER BY ${sortColumn} ${sort}
+    ${limit}`;
 
     const values = [searchSql];
     db.query(sql, values, (error, result) => {

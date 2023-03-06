@@ -40,6 +40,7 @@ function index(req) {
 
     const getbyUserSql = (!isNaN(req.query.getByUserId) ? 'AND user_id = ' + req.query.getByUserId : "");
 
+    const limit = `LIMIT ${!isNaN(req.query.limit) ? req.query.limit : 10}`;
     const sql = `SELECT 
     h.*,
     p.name AS payment_name, 
@@ -48,7 +49,8 @@ function index(req) {
     LEFT JOIN payment_method p ON h.payment_method = p.code
     WHERE p.name ILIKE $1
     ${getbyUserSql}
-    ORDER BY ${sortColumn} ${sort}`;
+    ORDER BY ${sortColumn} ${sort}
+    ${limit}`;
 
     const values = [searchSql];
     db.query(sql, values, (error, result) => {
