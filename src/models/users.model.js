@@ -5,12 +5,11 @@ function index(req) {
     const sort = req.query.sort == "desc" ? "DESC" : "ASC"; // sort with query ?sort=
     let sortColumn;
     switch (req.query.orderBy || null) {
-
       default:
         sortColumn = "id";
         break;
-
     }
+    const limit = `LIMIT ${!isNaN(req.query.limit) ? req.query.limit : 10}`;
     const sql = `SELECT 
     u.id, 
     u.email, 
@@ -23,7 +22,8 @@ function index(req) {
     p.birthdate,
     p.img AS img_url FROM users u 
     LEFT JOIN user_profile p ON p.user_id = u.id
-    ORDER BY ${sortColumn} ${sort}`;
+    ORDER BY ${sortColumn} ${sort}
+    ${limit}`;
 
     db.query(sql, (error, result) => {
       if (error) {
@@ -38,25 +38,38 @@ function index(req) {
 //
 const store = (req) => {
   return new Promise((resolve, reject) => {
-    const sql =
-      `WITH inserted_user AS (
+    const sql = `WITH inserted_user AS (
         INSERT INTO users (email, password) 
         VALUES ($1, $2)
         RETURNING id, email, password
       )
       INSERT INTO user_profile (user_id) 
       SELECT id
-      FROM inserted_user AS i;
-      SELECT *
-      FROM user_profile
-      WHERE user_id = (SELECT id FROM inserted_user);
-      `;
+      FROM inserted_user AS i RETURNING id, user_id`;
 
     const data = req.body;
     const values = [data.email, data.password];
     db.query(sql, values, (err, result) => {
       if (err) return reject(err);
-      resolve(result);
+      const idUser = result.rows[0].user_id;
+      db.query(
+        `SELECT u.id, 
+      u.email, 
+      u.password, 
+      p.display_name,
+      p.first_name,
+      p.last_name,
+      p.phone_number,
+      p.address,
+      p.birthdate,
+      p.img AS img_url FROM users u 
+      LEFT JOIN user_profile p ON p.user_id = u.id
+      WHERE u.id = '${idUser}'`,
+        (err, result) => {
+          if (err) return reject(err);
+          resolve(result);
+        }
+      );
     });
   });
 };
@@ -87,19 +100,35 @@ function show(req) {
   });
 }
 
-function update(req) {
+function updateProfile(req) {
   return new Promise((resolve, reject) => {
-    const { name, price, category_id } = req.body;
-    const { productId } = req.params;
+    const {
+      display_name,
+      first_name,
+      last_name,
+      phone_number,
+      address,
+      birthdate,
+    } = req.body;
+    const { userId } = req.params;
     const sql = `
-    UPDATE users
-    LEFT JOIN
-    user_profile ON users.id = user_profile.user_id 
-    SET 
-salary = salary + salary * 0.015
-WHERE
-merits.percentage IS NULL`;
-    const values = [name, price, category_id, productId];
+    UPDATE user_profile SET 
+    display_name = $1,
+    first_name = $2, 
+    last_name = $3, 
+    phone_number = $4, 
+    address = $5, 
+    birthdate = $6
+    WHERE id = $7 RETURNING *`;
+    const values = [
+      display_name,
+      first_name,
+      last_name,
+      phone_number,
+      address,
+      birthdate,
+      userId,
+    ];
     db.query(sql, values, (error, result) => {
       if (error) {
         reject(error);
@@ -110,12 +139,11 @@ merits.percentage IS NULL`;
   });
 }
 
-
 function destroy(req) {
   return new Promise((resolve, reject) => {
-    const { productId } = req.params;
-    const sql = `DELETE FROM products WHERE id = $1 RETURNING *`;
-    const values = [productId];
+    const { userId } = req.params;
+    const sql = `DELETE FROM users WHERE id IN (SELECT users.id FROM users LEFT JOIN user_profile ON users.id = user_profile.user_id WHERE users.id = $1) RETURNING *`;
+    const values = [userId];
     db.query(sql, values, (error, result) => {
       if (error) {
         reject(error);
@@ -130,6 +158,6 @@ export default {
   index,
   show,
   store,
-  update,
-  destroy
+  updateProfile,
+  destroy,
 };
