@@ -1,9 +1,8 @@
 import pg from 'pg';
-import * as dotenv from 'dotenv';
-dotenv.config();
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 const { DB_NAME, DB_HOST, DB_PORT, DB_USER, DB_PASS } = process.env;
-
 // config connect db postgresql
 const db = new pg.Pool({
   host: DB_HOST,
