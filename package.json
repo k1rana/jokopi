@@ -1,0 +1,41 @@
+{
+  "name": "jokopi",
+  "version": "1.0.0",
+  "description": "Backend for jokopi website",
+  "main": "index.js",
+  "type": "module",
+  "engines": {
+    "node": "18.x"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justcallmeahann/jokopi.git"
+  },
+  "keywords": [
+    "jokopi",
+    "kopi",
+    "kafe",
+    "coffee",
+    "cafe"
+  ],
+  "author": "ahann",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/justcallmeahann/jokopi/issues"
+  },
+  "homepage": "https://github.com/justcallmeahann/jokopi#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20",
+    "pg": "^8.9.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.35.0",
+    "eslint-config-google": "^0.14.0"
+  }
+}
