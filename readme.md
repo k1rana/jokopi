@@ -60,7 +60,7 @@ In mvc but this view replaces json
 | :-------- | :------- | :-------------------------------- |
 | `searchByName` | `string` | Search name |
 | `limit` | `string` | Limit output data |
-| `orderBy` | `string` | Order by column |
+| `orderBy` | `string` | Order by column | 
 | `sort` | `string` | Ascending (asc) or decending (desc) |
 
 
