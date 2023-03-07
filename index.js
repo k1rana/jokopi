@@ -12,7 +12,7 @@ app.use(morgan(":method :url :status :res[content-length] - :response-time ms"))
 app.use(express.json());
 
 // using public folders
-app.use('/', express.static('public'));
+app.use(express.static('public'));
 
 // routes
 import routers from './src/routers/index.js';
