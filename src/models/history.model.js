@@ -47,8 +47,7 @@ function index(req) {
     ORDER BY ${sortColumn} ${sort}
     ${limit}`;
 
-    const values = [searchSql];
-    db.query(sql, values, (error, result) => {
+    db.query(sql, (error, result) => {
       if (error) {
         reject(error);
         return;
@@ -97,7 +96,6 @@ function show(req) {
 
 function update(req) {
   return new Promise((resolve, reject) => {
-    const { name, price, category_id } = req.body;
     const { historyId } = req.params;
     const sql = `UPDATE history 
     SET 
@@ -113,7 +111,7 @@ function update(req) {
        id = $7 
     RETURNING *`;
     const data = req.body;
-    const values = [data.user_id, data.product_id, data.quantity, data.discount, data.promo_id, data.payment_method];
+    const values = [data.user_id, data.product_id, data.quantity, data.discount, data.promo_id, data.payment_method, historyId];
     db.query(sql, values, (error, result) => {
       if (error) {
         reject(error);
