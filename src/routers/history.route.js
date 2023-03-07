@@ -8,7 +8,7 @@ historyRouter.post('/', historyController.store); // create
 historyRouter.get('/', historyController.index); // read
 
 historyRouter.get('/:historyId', historyController.show); // read
-historyRouter.put('/:historyId', historyController.update); // update
+historyRouter.patch('/:historyId', historyController.update); // update
 historyRouter.delete('/:historyId', historyController.destroy); // delete
 
 export default historyRouter;
