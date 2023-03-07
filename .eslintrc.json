@@ -10,8 +10,7 @@
         "sourceType": "module"
     },
     "rules": { 
-        "object-curly-spacing": "off",
-        "new-cap": "off",
-        "require-jsdoc":"off"
+        "semi":"error",
+        "no-unused-vars":"error"
     }
 }
