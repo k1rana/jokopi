@@ -33,10 +33,6 @@ function index(req) {
         sortColumn = "h.id";
         break;
     }
-    let searchSql = "%";
-    if (req.query.searchByName !== undefined) {
-      searchSql = "%" + req.query.searchByName + "%";
-    }
 
     const getbyUserSql = (!isNaN(req.query.getByUserId) ? 'AND user_id = ' + req.query.getByUserId : "");
 
@@ -47,7 +43,6 @@ function index(req) {
     p.fee AS payment_fee
     FROM history h 
     LEFT JOIN payment_method p ON h.payment_method = p.code
-    WHERE p.name ILIKE $1
     ${getbyUserSql}
     ORDER BY ${sortColumn} ${sort}
     ${limit}`;
