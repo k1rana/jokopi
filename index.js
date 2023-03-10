@@ -9,7 +9,8 @@ const { APP_PORT } = process.env;
 import morgan from 'morgan';
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
 
-app.use(express.json());
+app.use(express.json()); // body json
+app.use(express.urlencoded({ extended: false })); // form-urlencoded
 
 // routes
 import routers from './src/routers/index.js';
