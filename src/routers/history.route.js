@@ -1,14 +1,14 @@
-import express from 'express';
+import express from "express";
 
-import historyController from '../controllers/history.controller.js';
+import historyController from "../controllers/history.controller.js";
 
 const historyRouter = express.Router();
 
-historyRouter.post('/', historyController.store); // create
-historyRouter.get('/', historyController.index); // read
+historyRouter.post("/", historyController.store); // create
+historyRouter.get("/", historyController.index); // read
 
-historyRouter.get('/:historyId', historyController.show); // read
-historyRouter.patch('/:historyId', historyController.update); // update
-historyRouter.delete('/:historyId', historyController.destroy); // delete
+historyRouter.get("/:historyId", historyController.show); // read
+historyRouter.patch("/:historyId", historyController.update); // update
+historyRouter.delete("/:historyId", historyController.destroy); // delete
 
 export default historyRouter;
