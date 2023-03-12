@@ -23,4 +23,12 @@ function check(req, res, next) {
   });
 }
 
-export default { check };
+function admin(req, res, next) {
+  if (req.authInfo.role <= 1)
+    return res.status(403).json({
+      msg: "Access denied!",
+    });
+  next();
+}
+
+export default { check, admin };

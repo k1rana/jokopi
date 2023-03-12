@@ -27,6 +27,7 @@ async function login(req, res) {
       id: userInfo.rows[0].id,
       email: userInfo.rows[0].email,
       phone_number: userInfo.rows[0].id.phone_number,
+      role: userInfo.rows[0].role_id,
     };
     const expiresIn = rememberMe === "true" ? "7d" : "10m";
     const jwtOptions = { expiresIn };
