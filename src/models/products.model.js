@@ -125,12 +125,34 @@ function show(req) {
   });
 }
 
-function update(req) {
+function selected(req) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT * FROM products p 
+    WHERE p.id = $1`;
+    const values = [req.params.productId];
+    db.query(sql, values, (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(result);
+    });
+  });
+}
+
+function update(req, firstData) {
   return new Promise((resolve, reject) => {
     const { name, price, category_id } = req.body;
+    const data = firstData.rows[0];
+    const updatedName = name == undefined ? data.name : name;
+    const updatedPrice = price == undefined ? data.price : price;
+    const updatedCat =
+      category_id == undefined ? data.category_id : category_id;
+    const fileLink = !req.file ? data.img : `/images/${req.file.filename}`;
+
     const { productId } = req.params;
-    const sql = `UPDATE products SET name = $1, price = $2, category_id = $3 WHERE id = $4 RETURNING *`;
-    const values = [name, price, category_id, productId];
+    const sql = `UPDATE products SET name = $1, price = $2, category_id = $3, img = $4 WHERE id = $5 RETURNING *`;
+    const values = [updatedName, updatedPrice, updatedCat, fileLink, productId];
     db.query(sql, values, (error, result) => {
       if (error) {
         reject(error);
@@ -160,6 +182,7 @@ export default {
   index,
   meta,
   show,
+  selected,
   store,
   update,
   destroy,

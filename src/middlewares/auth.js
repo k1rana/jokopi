@@ -1,15 +1,15 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
 function check(req, res, next) {
   // take Auth.. from header
   const bearerToken = req.header("Authorization");
   if (!bearerToken)
     return res.status(403).json({
-      msg: "Access denied!",
+      msg: "Access denied! Not logged in",
     });
   const token = bearerToken.split(" ")[1];
   jwt.verify(token, process.env.JWT_SECRET_KEY, (err, payload) => {
-    if (err.name)
+    if (err && err.name)
       return res.status(403).json({
         // err handling
         msg: err.message,

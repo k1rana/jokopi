@@ -62,18 +62,16 @@ async function show(req, res) {
   }
 }
 
-// params => query (search, filter, sort, paginasi) & path (get detail)
-// query => req.query
-// path => req.params
 async function update(req, res) {
   try {
-    const result = await productModel.update(req);
-    if (result.rows.length === 0) {
+    const data = await productModel.selected(req);
+    if (data.rows.length === 0) {
       res.status(404).json({
         msg: "Data not found",
       });
       return;
     }
+    const result = await productModel.update(req, data);
     res.status(200).json({
       data: result.rows,
       msg: "Update success",
