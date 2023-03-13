@@ -1,53 +1,36 @@
-import db from "../helpers/postgre.js";
+import db from '../helpers/postgre.js';
 
 function index(req) {
   return new Promise((resolve, reject) => {
-    const sort = req.query.sort == "desc" ? "DESC" : "ASC"; // sort with query ?sort=
-    let sortColumn;
-    switch (req.query.orderBy || null) {
-      case "user_id":
-        sortColumn = "h.user_id";
-      break;
-
-      case "price":
-        sortColumn = "h.price";
-      break;
-
-      case "transaction_time":
-        sortColumn = "h.transaction_time";
-      break;
-
-      case "product_id":
-        sortColumn = "h.product_id";
-      break;
-
-      case "discount":
-        sortColumn = "h.discount";
-      break;
-
-      case "total_price":
-        sortColumn = "h.total_price";
-      break;
-
-      default:
-        sortColumn = "h.id";
-        break;
-    }
-
-    const getbyUserSql = (!isNaN(req.query.getByUserId) ? 'AND user_id = ' + req.query.getByUserId : "");
-
     const limit = `LIMIT ${!isNaN(req.query.limit) ? req.query.limit : 10}`;
-    const sql = `SELECT 
-    h.*,
-    p.name AS payment_name, 
-    p.fee AS payment_fee
-    FROM history h 
-    LEFT JOIN payment_method p ON h.payment_method = p.code
-    ${getbyUserSql}
-    ORDER BY ${sortColumn} ${sort}
+    const sql = `SELECT t.id, u.email as receiver_email, up.display_name as receiver_name, ps.code as payment_code, ps.fee as payment_fee, d.name as delivery, d.fee as delivery_fee
+    FROM transactions t
+    JOIN users u ON t.user_id = u.id
+    JOIN user_profile up ON t.user_id = up.user_id
+    JOIN payments ps ON t.payment_code = ps.code
+    JOIN deliveries d ON t.delivery_id = d.id
     ${limit}`;
 
     db.query(sql, (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(result);
+    });
+  });
+}
+
+function list(id_transaction) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT ROW_NUMBER() OVER() AS number, p.name as product_name, ps.name as size
+    FROM transaction_product_size tps
+    JOIN transactions t ON tps.transaction_id = t.id
+    JOIN products p ON tps.product_id = p.id
+    JOIN product_size ps ON tps.size_id = ps.id
+    WHERE tps.transaction_id = $1`;
+
+    db.query(sql, [id_transaction], (error, result) => {
       if (error) {
         reject(error);
         return;
@@ -66,7 +49,14 @@ const store = (req) => {
       RETURNING *`;
 
     const data = req.body;
-    const values = [data.user_id, data.product_id, data.quantity, data.discount, data.promo_id, data.payment_method];
+    const values = [
+      data.user_id,
+      data.product_id,
+      data.quantity,
+      data.discount,
+      data.promo_id,
+      data.payment_method,
+    ];
     db.query(sql, values, (err, result) => {
       if (err) return reject(err);
       resolve(result);
@@ -111,7 +101,15 @@ function update(req) {
        id = $7 
     RETURNING *`;
     const data = req.body;
-    const values = [data.user_id, data.product_id, data.quantity, data.discount, data.promo_id, data.payment_method, historyId];
+    const values = [
+      data.user_id,
+      data.product_id,
+      data.quantity,
+      data.discount,
+      data.promo_id,
+      data.payment_method,
+      historyId,
+    ];
     db.query(sql, values, (error, result) => {
       if (error) {
         reject(error);
@@ -143,4 +141,5 @@ export default {
   store,
   update,
   destroy,
+  list,
 };
