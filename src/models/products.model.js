@@ -1,4 +1,4 @@
-import db from "../helpers/postgre.js";
+import db from '../helpers/postgre.js';
 
 function index(req) {
   return new Promise((resolve, reject) => {
@@ -14,12 +14,12 @@ function index(req) {
         break;
 
       default:
-        sortColumn = "id";
+        sortColumn = "p.id";
         break;
     }
-    let searchSql = '%';
+    let searchSql = "%";
     if (req.query.searchByName !== undefined) {
-      searchSql = '%'+req.query.searchByName+'%';
+      searchSql = "%" + req.query.searchByName + "%";
     }
     const limit = `LIMIT ${!isNaN(req.query.limit) ? req.query.limit : 10}`;
     const sql = `SELECT 
@@ -40,6 +40,52 @@ function index(req) {
         return;
       }
       resolve(result);
+    });
+  });
+}
+
+function meta(req) {
+  return new Promise((resolve, reject) => {
+    const q = req.query;
+    let searchSql = "%";
+    if (req.query.searchByName !== undefined) {
+      searchSql = "%" + req.query.searchByName + "%";
+    }
+    const sql = `SELECT COUNT(*) AS totaldata FROM products p WHERE p.name ILIKE $1`;
+
+    const values = [searchSql];
+    db.query(sql, values, (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      const totalData = parseInt(result.rows[0].totaldata);
+      const page = parseInt(q.page) || 1;
+      const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 10;
+      const totalPage = Math.ceil(totalData / limit);
+      let add = "";
+      if (req.query.limit != undefined) add += `&limit=${limit}`;
+      if (req.query.searchByName != undefined)
+        add += `&searchByName=${req.query.searchByName}`;
+      if (req.query.orderBy != undefined)
+        add += `&orderBy=${req.query.orderBy}`;
+      if (req.query.sort != undefined) add += `&sort=${req.query.sort}`;
+      let next = `/products?page=${parseInt(q.page) + 1}`; // coba dicari
+      let prev = `/products?page=${parseInt(q.page) - 1}`; // coba dicari
+
+      next += add;
+      prev += add;
+      if (page === 1) prev = null;
+      if (page === totalPage) next = null;
+
+      const meta = {
+        totalData,
+        prev,
+        next,
+        totalPage,
+      };
+
+      resolve(meta);
     });
   });
 }
@@ -95,7 +141,6 @@ function update(req) {
   });
 }
 
-
 function destroy(req) {
   return new Promise((resolve, reject) => {
     const { productId } = req.params;
@@ -113,8 +158,9 @@ function destroy(req) {
 
 export default {
   index,
+  meta,
   show,
   store,
   update,
-  destroy
+  destroy,
 };
