@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 
-function check(req, res, next) {
+import tokenModel from '../models/token.model.js';
+
+async function check(req, res, next) {
   // take Auth.. from header
   const bearerToken = req.header("Authorization");
   if (!bearerToken)
@@ -8,6 +10,15 @@ function check(req, res, next) {
       msg: "Access denied! Not logged in",
     });
   const token = bearerToken.split(" ")[1];
+
+  const tokenVerify = await tokenModel.get(token);
+  if (!tokenVerify) {
+    return res.status(403).json({
+      msg: "JWT Rejected",
+    });
+  }
+
+  console.log(tokenVerify);
   jwt.verify(token, process.env.JWT_SECRET_KEY, (err, payload) => {
     if (err && err.name)
       return res.status(403).json({

@@ -1,8 +1,9 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-import db from "../helpers/postgre.js";
-import authModel from "../models/auth.model.js";
+import db from '../helpers/postgre.js';
+import authModel from '../models/auth.model.js';
+import tokenModel from '../models/token.model.js';
 
 // login controller
 async function login(req, res) {
@@ -29,11 +30,28 @@ async function login(req, res) {
       phone_number: userInfo.rows[0].id.phone_number,
       role: userInfo.rows[0].role_id,
     };
-    const expiresIn = rememberMe === "true" ? "7d" : "10m";
+
+    const expiresIn =
+      rememberMe === "true" ? 7 * 24 * 60 * 60 * 1000 : 10 * 1000; // 7 hari : 10 menit
     const jwtOptions = { expiresIn };
 
     jwt.sign(payload, process.env.JWT_SECRET_KEY, jwtOptions, (err, token) => {
       if (err) throw err;
+
+      let currentDate = new Date();
+      let expirationDate = new Date(currentDate.getTime() + expiresIn); // Menambahkan 7 hari ke tanggal saat ini
+
+      tokenModel.store(
+        {
+          token: token,
+          expired_at: expirationDate,
+        },
+        (err, result) => {
+          if (err) throw err;
+          console.log(result);
+        }
+      );
+
       res.status(200).json({
         msg: "Login successful!",
         token,
@@ -102,4 +120,22 @@ async function register(req, res) {
   }
 }
 
-export default { login, register };
+async function logout(req, res) {
+  try {
+    const token = req.header("Authorization").split(" ")[1];
+    const removeToken = await tokenModel.destroy(token);
+    if (!removeToken) {
+      throw new Error("Token not valid");
+    }
+    res.status(200).json({
+      msg: "Logout Success",
+    });
+  } catch (error) {
+    console.log(err);
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+  }
+}
+
+export default { login, register, logout };

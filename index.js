@@ -1,25 +1,37 @@
-
 import 'dotenv/config'; // enviroment
+
 // dotenv.config();
 import express from 'express'; // express js
-const app = express();
-
-const { APP_PORT } = process.env;
-
+import mongoose from 'mongoose';
 import morgan from 'morgan';
-app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
-
-app.use(express.json()); // body json
-app.use(express.urlencoded({ extended: false })); // form-urlencoded
 
 // routes
 import routers from './src/routers/index.js';
 
+const app = express();
+
+const { APP_PORT } = process.env;
+
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms")
+);
+
+app.use(express.json()); // body json
+app.use(express.urlencoded({ extended: false })); // form-urlencoded
+
 app.use(routers);
 // using public folders
-app.use(express.static('public'));
+app.use(express.static("public"));
 
-// start server
-app.listen(APP_PORT || 8080, () =>{
-  console.log(`Server running at port ${APP_PORT}`);
-});
+// start server with mongoose (mongodb module)
+mongoose
+  .connect(
+    `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_HOST}/${process.env.MONGODB_NAME}?retryWrites=true&w=majority`
+  )
+  .then(() => {
+    console.log("Mongo DB Connected");
+    app.listen(APP_PORT, () => {
+      console.log(`Server us running at port ${APP_PORT}`);
+    });
+  })
+  .catch((err) => console.log(err));
