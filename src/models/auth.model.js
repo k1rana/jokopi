@@ -1,6 +1,6 @@
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
 
-import db from "../helpers/postgre.js";
+import db from '../helpers/postgre.js';
 
 function getUserInfo(email) {
   return new Promise((resolve, reject) => {
@@ -64,11 +64,22 @@ function selectUser(client, userId) {
   });
 }
 
+function editPassword(userid, newPassword) {
+  return new Promise((resolve, reject) => {
+    const sql = "UPDATE users SET password = $2 WHERE id = $1 RETURNING id";
+    db.query(sql, [userid, newPassword], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+}
+
 export default {
   getUserInfo,
   createUser,
   createProfile,
   checkEmail,
   checkPhoneNumber,
+  editPassword,
   selectUser,
 };

@@ -6,7 +6,7 @@ async function index(req, res) {
     if (result.rows.length === 0) {
       res.status(404).json({
         data: result.rows,
-        msg: 'User not found',
+        msg: "User not found",
       });
       return;
     }
@@ -16,7 +16,7 @@ async function index(req, res) {
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
-      msg: 'Internal Server Error',
+      msg: "Internal Server Error",
     });
   }
 }
@@ -26,12 +26,12 @@ async function store(req, res) {
     const result = await userModel.store(req);
     res.status(201).json({
       data: result.rows,
-      msg: 'Create Success',
+      msg: "Create Success",
     });
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
-      msg: 'Internal Server Error',
+      msg: "Internal Server Error",
     });
   }
 }
@@ -39,9 +39,9 @@ async function store(req, res) {
 async function show(req, res) {
   try {
     const result = await userModel.show(req);
-    if (result.rows.length === 0 ) {
+    if (result.rows.length === 0) {
       res.status(404).json({
-        msg: 'Data not found'
+        msg: "Data not found",
       });
       return;
     }
@@ -51,7 +51,7 @@ async function show(req, res) {
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
-      msg: 'Internal Server Error',
+      msg: "Internal Server Error",
     });
   }
 }
@@ -59,20 +59,20 @@ async function show(req, res) {
 async function updateProfile(req, res) {
   try {
     const result = await userModel.updateProfile(req);
-    if (result.rows.length === 0 ) {
+    if (result.rows.length === 0) {
       res.status(404).json({
-        msg: 'Data not found'
+        msg: "Data not found",
       });
       return;
     }
     res.status(200).json({
       data: result.rows,
-      msg: 'Update success'
+      msg: "Update success",
     });
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
-      msg: 'Internal Server Error',
+      msg: "Internal Server Error",
     });
   }
 }
@@ -80,20 +80,20 @@ async function updateProfile(req, res) {
 async function destroy(req, res) {
   try {
     const result = await userModel.destroy(req);
-    if (result.rows.length === 0 ) {
+    if (result.rows.length === 0) {
       res.status(404).json({
-        msg: 'Data not found'
+        msg: "Data not found",
       });
       return;
     }
     res.status(200).json({
       data: result.rows,
-      msg: 'Data was destroyed'
+      msg: "Data was destroyed",
     });
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
-      msg: 'Internal Server Error',
+      msg: "Internal Server Error",
     });
   }
 }
@@ -103,5 +103,5 @@ export default {
   show,
   store,
   updateProfile,
-  destroy
+  destroy,
 };

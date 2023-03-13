@@ -18,7 +18,6 @@ async function check(req, res, next) {
     });
   }
 
-  console.log(tokenVerify);
   jwt.verify(token, process.env.JWT_SECRET_KEY, (err, payload) => {
     if (err && err.name)
       return res.status(403).json({

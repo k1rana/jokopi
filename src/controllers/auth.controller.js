@@ -138,4 +138,26 @@ async function logout(req, res) {
   }
 }
 
-export default { login, register, logout };
+async function updatePassword(req, res) {
+  const { authInfo, body } = req;
+  if (body.oldPassword == undefined || body.newPassword == undefined) {
+    res.status(400).json({ msg: "Field tidak boleh kosong!" });
+    return;
+  }
+  try {
+    const userData = await authModel.getUserInfo(authInfo.email);
+    const passFromDb = userData.rows[0].password;
+    const isPasswordValid = await bcrypt.compare(body.oldPassword, passFromDb);
+    if (!isPasswordValid)
+      return res.status(403).json({
+        msg: "Password lama salah!",
+      });
+    const hashedPassword = await bcrypt.hash(body.newPassword, 10);
+    await authModel.editPassword(authInfo.id, hashedPassword);
+    res.status(200).json({
+      msg: "Edit Password Success",
+    });
+  } catch (error) {}
+}
+
+export default { login, register, logout, updatePassword };
