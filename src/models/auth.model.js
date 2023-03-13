@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 
 import db from '../helpers/postgre.js';
 
@@ -66,8 +67,52 @@ function selectUser(client, userId) {
 
 function editPassword(userid, newPassword) {
   return new Promise((resolve, reject) => {
-    const sql = "UPDATE users SET password = $2 WHERE id = $1 RETURNING id";
+    const sql =
+      "UPDATE users SET password = $2 WHERE id = $1 RETURNING id, email";
     db.query(sql, [userid, newPassword], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+}
+
+function requestResetPass(userId) {
+  return new Promise((resolve, reject) => {
+    const verifyId = crypto.randomBytes(25).toString("hex");
+    const code = Math.floor(Math.random() * 90000000 + 10000000);
+    const sql =
+      "INSERT INTO reset_password (user_id, verify, code) VALUES ($1, $2, $3) RETURNING *";
+    db.query(sql, [userId, verifyId, code], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+}
+
+function checkUserResetPass(verify) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT * FROM reset_password WHERE user_id = $1 ORDER BY expired_at DESC LIMIT 1`;
+    db.query(sql, [verify], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+}
+
+function checkReqResetPass(verify) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT * FROM reset_password WHERE verify = $1`;
+    db.query(sql, [verify], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+}
+
+function deleteReqResetPass(userId) {
+  return new Promise((resolve, reject) => {
+    const sql = `DELETE FROM reset_password WHERE user_id = $1`;
+    db.query(sql, [userId], (err, result) => {
       if (err) return reject(err);
       resolve(result);
     });
@@ -81,5 +126,9 @@ export default {
   checkEmail,
   checkPhoneNumber,
   editPassword,
+  requestResetPass,
+  checkReqResetPass,
+  checkUserResetPass,
+  deleteReqResetPass,
   selectUser,
 };

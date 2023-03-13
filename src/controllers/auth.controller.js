@@ -131,7 +131,7 @@ async function logout(req, res) {
       msg: "Logout Success",
     });
   } catch (error) {
-    console.log(err);
+    console.log(error);
     res.status(500).json({
       msg: "Internal Server Error",
     });
@@ -152,12 +152,96 @@ async function updatePassword(req, res) {
       return res.status(403).json({
         msg: "Password lama salah!",
       });
-    const hashedPassword = await bcrypt.hash(body.newPassword, 10);
+    const hashedPassword = await bcrypt.hash(body.newPassword, 15);
     await authModel.editPassword(authInfo.id, hashedPassword);
     res.status(200).json({
       msg: "Edit Password Success",
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+  }
 }
 
-export default { login, register, logout, updatePassword };
+async function requestResetPass(req, res) {
+  try {
+    const userData = await authModel.getUserInfo(req.body.email);
+    if (userData.rows.length < 1)
+      return res.status(409).json({ msg: "Email not registered" });
+    const isAlreadyReq = await authModel.checkUserResetPass(
+      userData.rows[0].id
+    );
+    const now = new Date();
+    if (isAlreadyReq.rows.length > 0 && isAlreadyReq.rows[0].expired_at > now) {
+      return res.status(400).json({
+        msg: "Kamu telah generate link reset password, tunggu 10 menit",
+      });
+    }
+    const result = await authModel.requestResetPass(userData.rows[0].id);
+    res.status(201).json({
+      msg: "Link reset password created! Berlaku 10 menit",
+      link: `/resetPass/?verify=${result.rows[0].verify}&code=${result.rows[0].code}`,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+  }
+}
+
+async function resetPassword(req, res) {
+  try {
+    const result = await authModel.checkReqResetPass(req.query.verify);
+    if (result.rows.length < 1) {
+      res.status(404).json({
+        msg: "Verify not found",
+      });
+      return;
+    }
+    if (result.rows[0].code !== req.query.code) {
+      res.status(404).json({
+        msg: "Verify not found",
+      });
+      return;
+    }
+    const now = new Date();
+    if (result.rows[0].expired_at < now) {
+      return res.status(400).json({
+        msg: "The link has expired",
+      });
+    }
+    if (req.body.newPassword == undefined || req.body.newPassword.length < 8) {
+      res.status(400).json({
+        msg: "Password baru harus minimal 8 karakter",
+      });
+      return;
+    }
+    const hashedPassword = await bcrypt.hash(req.body.newPassword, 15);
+    const resetPass = await authModel.editPassword(
+      result.rows[0].user_id,
+      hashedPassword
+    );
+    await authModel.deleteReqResetPass(result.rows[0].user_id);
+    res.status(200).json({
+      data: resetPass.rows,
+      msg: "Password reseted succesfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+  }
+}
+
+export default {
+  login,
+  register,
+  logout,
+  updatePassword,
+  requestResetPass,
+  resetPassword,
+};
