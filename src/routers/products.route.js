@@ -6,7 +6,13 @@ import { singleUpload } from '../middlewares/imageUpload.js';
 
 const productsRouter = express.Router();
 
-productsRouter.post("/", productController.store); // create
+productsRouter.post(
+  "/",
+  auth.check,
+  auth.admin,
+  singleUpload("image"),
+  productController.store
+); // create
 productsRouter.get("/", productController.index); // read
 
 productsRouter.get("/:productId", productController.show); // read

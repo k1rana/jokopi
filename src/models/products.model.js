@@ -92,11 +92,11 @@ function meta(req) {
 
 const store = (req) => {
   return new Promise((resolve, reject) => {
+    const fileLink = !req.file ? "" : `/images/${req.file.filename}`;
     const sql =
-      "INSERT INTO products (name, price, category_id) VALUES ($1, $2, $3) RETURNING *";
-
+      "INSERT INTO products (name, price, category_id, img) VALUES ($1, $2, $3, $4) RETURNING *";
     const data = req.body;
-    const values = [data.name, data.price, data.category_id || 0];
+    const values = [data.name, data.price, data.category_id, fileLink];
     db.query(sql, values, (err, result) => {
       if (err) return reject(err);
       resolve(result);
@@ -110,7 +110,8 @@ function show(req) {
     p.id, 
     p.name, 
     p.price, 
-    p.category_id, 
+    p.category_id,
+    p.img, 
     c.name AS category_name FROM products p 
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.id = $1`;
