@@ -1,4 +1,4 @@
-import db from "../helpers/postgre.js";
+import db from '../helpers/postgre.js';
 
 function index(req) {
   return new Promise((resolve, reject) => {
@@ -13,11 +13,10 @@ function index(req) {
     const sql = `SELECT 
     u.id, 
     u.email, 
-    u.password, 
+    u.phone_number,
     p.display_name,
     p.first_name,
     p.last_name,
-    p.phone_number,
     p.address,
     p.birthdate,
     p.img AS img_url FROM users u 
@@ -56,10 +55,10 @@ const store = (req) => {
         `SELECT u.id, 
       u.email, 
       u.password, 
+      u.phone_number,
       p.display_name,
       p.first_name,
       p.last_name,
-      p.phone_number,
       p.address,
       p.birthdate,
       p.img AS img_url FROM users u 
@@ -80,10 +79,10 @@ function show(req) {
     u.id, 
     u.email, 
     u.password, 
+    u.phone_number,
     p.display_name,
     p.first_name,
     p.last_name,
-    p.phone_number,
     p.address,
     p.birthdate,
     p.img AS img_url FROM users u 
@@ -115,8 +114,7 @@ function updateProfile(req) {
     UPDATE user_profile SET 
     display_name = $1,
     first_name = $2, 
-    last_name = $3, 
-    phone_number = $4, 
+    last_name = $3,  
     address = $5, 
     birthdate = $6
     WHERE id = $7 RETURNING *`;
@@ -139,12 +137,23 @@ function updateProfile(req) {
   });
 }
 
-function destroy(req) {
+function destroyUser(client, userId) {
   return new Promise((resolve, reject) => {
-    const { userId } = req.params;
-    const sql = `DELETE FROM users WHERE id IN (SELECT users.id FROM users LEFT JOIN user_profile ON users.id = user_profile.user_id WHERE users.id = $1) RETURNING *`;
-    const values = [userId];
-    db.query(sql, values, (error, result) => {
+    const sql = `DELETE FROM users WHERE id = $1 RETURNING *`;
+    client.query(sql, [userId], (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(result);
+    });
+  });
+}
+
+function destroyProfile(client, userId) {
+  return new Promise((resolve, reject) => {
+    const sql = `DELETE FROM users WHERE id = $1 RETURNING *`;
+    client.query(sql, [userId], (error, result) => {
       if (error) {
         reject(error);
         return;
@@ -159,5 +168,6 @@ export default {
   show,
   store,
   updateProfile,
-  destroy,
+  destroyProfile,
+  destroyUser,
 };

@@ -1,3 +1,4 @@
+import db from '../helpers/postgre.js';
 import userModel from '../models/users.model.js';
 
 async function index(req, res) {
@@ -78,19 +79,25 @@ async function updateProfile(req, res) {
 }
 
 async function destroy(req, res) {
+  const client = await db.connect();
   try {
-    const result = await userModel.destroy(req);
+    const result = await userModel.show(req);
     if (result.rows.length === 0) {
       res.status(404).json({
         msg: "Data not found",
       });
       return;
     }
+    (await client).query("BEGIN");
+    await userModel.destroyProfile(client, req.params.userId);
+    await userModel.destroyUser(client, req.params.userId);
+    (await client).query("COMMIT");
     res.status(200).json({
       data: result.rows,
       msg: "Data was destroyed",
     });
   } catch (err) {
+    (await client).query("ROLLBACK");
     console.log(err.message);
     res.status(500).json({
       msg: "Internal Server Error",
