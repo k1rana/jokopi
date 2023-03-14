@@ -36,6 +36,45 @@ function index(req) {
   });
 }
 
+function getMeta(req) {
+  return new Promise((resolve, reject) => {
+    const q = req.query;
+    const sql = `SELECT COUNT(*) AS totaldata FROM users`;
+
+    db.query(sql, (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      const totalData = parseInt(result.rows[0].totaldata);
+      const page = !isNaN(q.page) ? parseInt(q.page) : 1;
+      const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 10;
+      const totalPage = Math.ceil(totalData / limit);
+      let add = "";
+      if (req.query.limit != undefined) add += `&limit=${limit}`;
+      if (req.query.orderBy != undefined)
+        add += `&orderBy=${req.query.orderBy}`;
+      if (req.query.sort != undefined) add += `&sort=${req.query.sort}`;
+      let next = `/users?page=${parseInt(page) + 1}`; // next
+      let prev = `/users?page=${parseInt(page) - 1}`; // prev
+
+      next += add;
+      prev += add;
+      if (page <= 1) prev = null;
+      if (page >= totalPage) next = null;
+
+      const meta = {
+        totalData,
+        prev,
+        next,
+        totalPage,
+      };
+
+      resolve(meta);
+    });
+  });
+}
+
 //
 const storeUser = (client, req) => {
   return new Promise(async (resolve, reject) => {
@@ -174,4 +213,5 @@ export default {
   updateProfile,
   destroyProfile,
   destroyUser,
+  getMeta,
 };

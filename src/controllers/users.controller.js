@@ -3,6 +3,14 @@ import userModel from '../models/users.model.js';
 
 async function index(req, res) {
   try {
+    const meta = await userModel.getMeta(req);
+    const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1;
+    if (page < 1 || page > meta.totalPage) {
+      res.status(404).json({
+        msg: "Invalid page",
+      });
+      return;
+    }
     const result = await userModel.index(req);
     if (result.rows.length === 0) {
       res.status(404).json({
@@ -12,6 +20,7 @@ async function index(req, res) {
       return;
     }
     res.status(200).json({
+      meta,
       data: result.rows,
     });
   } catch (err) {

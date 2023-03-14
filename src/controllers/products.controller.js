@@ -2,6 +2,14 @@ import productModel from '../models/products.model.js';
 
 async function index(req, res) {
   try {
+    const metaResult = await productModel.meta(req);
+    const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1;
+    if (page < 1 || page > metaResult.totalPage) {
+      res.status(404).json({
+        msg: "Invalid page",
+      });
+      return;
+    }
     const result = await productModel.index(req);
     if (result.rows.length === 0) {
       res.status(404).json({
@@ -10,7 +18,6 @@ async function index(req, res) {
       });
       return;
     }
-    const metaResult = await productModel.meta(req);
 
     res.status(200).json({
       meta: metaResult,
