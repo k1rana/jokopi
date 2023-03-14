@@ -22,6 +22,7 @@ In mvc but this view replaces json
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `limit` | `string` | Limit output data |
+| `page` | `string` | Pagination |
 | `orderBy` | `string` | Order by column |
 | `sort` | `string` | Ascending (asc) or decending (desc)|
 
@@ -35,18 +36,7 @@ In mvc but this view replaces json
 | :-------- | :------- | :-------------------------------- |
 | `searchByName` | `string` | Search name |
 | `limit` | `string` | Limit output data |
-| `orderBy` | `string` | Order by column |
-| `sort` | `string` | Ascending (asc) or decending (desc) |
-
-#### Get all history
-
-```http
-  GET /history/
-```
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `limit` | `string` | Limit output data |
+| `page` | `string` | Pagination |
 | `orderBy` | `string` | Order by column |
 | `sort` | `string` | Ascending (asc) or decending (desc) |
 

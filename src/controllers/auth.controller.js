@@ -54,7 +54,7 @@ async function login(req, res) {
 
       res.status(200).json({
         msg: "Login successful!",
-        token,
+        data: { token },
       });
     });
   } catch (err) {
@@ -182,7 +182,9 @@ async function requestResetPass(req, res) {
     const result = await authModel.requestResetPass(userData.rows[0].id);
     res.status(201).json({
       msg: "Link reset password created! Berlaku 10 menit",
-      link: `/resetPass/?verify=${result.rows[0].verify}&code=${result.rows[0].code}`,
+      data: {
+        link: `/resetPass/?verify=${result.rows[0].verify}&code=${result.rows[0].code}`,
+      },
     });
   } catch (error) {
     console.log(error);
