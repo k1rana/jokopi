@@ -196,7 +196,7 @@ async function resetPassword(req, res) {
   try {
     const result = await authModel.checkReqResetPass(req.query.verify);
     if (result.rows.length < 1) {
-      res.status(404).json({
+      res.status(400).json({
         msg: "Verify not found",
       });
       return;

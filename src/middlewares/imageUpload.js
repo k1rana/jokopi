@@ -20,7 +20,7 @@ const limits = 2e6; // limit max upload
 const fileFilter = (req, file, cb) => {
   const pattern = /jpg|png/i;
   const ext = extname(file.originalname);
-  if (!pattern.test(ext)) return cb(null, false);
+  if (!pattern.test(ext)) return cb(new Error("Ekstensi harus png/jpg"), false);
   cb(null, true);
 };
 

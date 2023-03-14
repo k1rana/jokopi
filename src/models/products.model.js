@@ -92,7 +92,7 @@ function meta(req) {
 
 const store = (req) => {
   return new Promise((resolve, reject) => {
-    const fileLink = !req.file ? "" : `/images/${req.file.filename}`;
+    const fileLink = !req.file ? null : `/images/${req.file.filename}`;
     const sql =
       "INSERT INTO products (name, price, category_id, img) VALUES ($1, $2, $3, $4) RETURNING *";
     const data = req.body;
