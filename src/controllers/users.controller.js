@@ -23,13 +23,17 @@ async function index(req, res) {
 }
 
 async function store(req, res) {
+  const client = await db.connect();
   try {
-    const result = await userModel.store(req);
+    (await client).query("BEGIN");
+    const createUser = await userModel.storeUser(client, req);
+    await userModel.storeProfile(client, createUser.rows[0].id);
+    (await client).query("COMMIT");
     res.status(201).json({
-      data: result.rows,
       msg: "Create Success",
     });
   } catch (err) {
+    (await client).query("ROLLBACK");
     console.log(err.message);
     res.status(500).json({
       msg: "Internal Server Error",

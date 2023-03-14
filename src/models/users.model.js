@@ -1,3 +1,5 @@
+import bcrypt from 'bcrypt';
+
 import db from '../helpers/postgre.js';
 
 function index(req) {
@@ -35,40 +37,41 @@ function index(req) {
 }
 
 //
-const store = (req) => {
-  return new Promise((resolve, reject) => {
-    const sql = `WITH inserted_user AS (
-        INSERT INTO users (email, password) 
-        VALUES ($1, $2)
-        RETURNING id, email, password
-      )
-      INSERT INTO user_profile (user_id) 
-      SELECT id
-      FROM inserted_user AS i RETURNING id, user_id`;
+const storeUser = (client, req) => {
+  return new Promise(async (resolve, reject) => {
+    const sql = `INSERT INTO users (email, password, phone_number, role_id) 
+        VALUES ($1, $2, $3, $4)
+        RETURNING id, email, role_id`;
 
     const data = req.body;
-    const values = [data.email, data.password];
-    db.query(sql, values, (err, result) => {
-      if (err) return reject(err);
-      const idUser = result.rows[0].user_id;
-      db.query(
-        `SELECT u.id, 
-      u.email, 
-      u.password, 
-      u.phone_number,
-      p.display_name,
-      p.first_name,
-      p.last_name,
-      p.address,
-      p.birthdate,
-      p.img AS img_url FROM users u 
-      LEFT JOIN user_profile p ON p.user_id = u.id
-      WHERE u.id = '${idUser}'`,
-        (err, result) => {
-          if (err) return reject(err);
-          resolve(result);
-        }
-      );
+    const hashedPassword = await bcrypt.hash(data.password, 15);
+    const values = [
+      data.email,
+      hashedPassword,
+      data.phone_number,
+      data.role || 1,
+    ];
+    client.query(sql, values, (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(result);
+    });
+  });
+};
+
+const storeProfile = (client, userId) => {
+  return new Promise((resolve, reject) => {
+    const sql = `INSERT INTO user_profile (user_id) 
+        VALUES ($1)
+        RETURNING user_id`;
+    client.query(sql, [userId], (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(result);
     });
   });
 };
@@ -166,7 +169,8 @@ function destroyProfile(client, userId) {
 export default {
   index,
   show,
-  store,
+  storeUser,
+  storeProfile,
   updateProfile,
   destroyProfile,
   destroyUser,
