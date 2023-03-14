@@ -180,11 +180,11 @@ async function requestResetPass(req, res) {
       });
     }
     const result = await authModel.requestResetPass(userData.rows[0].id);
+    console.log(
+      `/resetPass/?verify=${result.rows[0].verify}&code=${result.rows[0].code}`
+    );
     res.status(201).json({
       msg: "Link reset password created! Berlaku 10 menit",
-      data: {
-        link: `/resetPass/?verify=${result.rows[0].verify}&code=${result.rows[0].code}`,
-      },
     });
   } catch (error) {
     console.log(error);
