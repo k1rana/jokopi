@@ -1,5 +1,6 @@
 import 'dotenv/config'; // enviroment
 
+import cors from 'cors';
 // dotenv.config();
 import express from 'express'; // express js
 import mongoose from 'mongoose';
@@ -11,6 +12,8 @@ import routers from './src/routers/index.js';
 const app = express();
 
 const { APP_PORT } = process.env;
+
+app.use(cors());
 
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms")
