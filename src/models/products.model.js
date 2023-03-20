@@ -1,4 +1,4 @@
-import db from '../helpers/postgre.js';
+import db from "../helpers/postgre.js";
 
 function index(req) {
   return new Promise((resolve, reject) => {
@@ -21,6 +21,10 @@ function index(req) {
     if (req.query.searchByName !== undefined) {
       searchSql = "%" + req.query.searchByName + "%";
     }
+    const qcategory = !isNan(req.query.category)
+      ? ` , category_id = ${req.query.category}`
+      : "";
+
     const limit = `LIMIT ${!isNaN(req.query.limit) ? req.query.limit : 10}`;
     const sql = `SELECT 
     p.id, 
@@ -31,6 +35,7 @@ function index(req) {
     c.name AS category_name FROM products p 
     LEFT JOIN categories c ON p.category_id = c.id
     WHERE p.name ILIKE $1
+    ${qcategory}
     ORDER BY ${sortColumn} ${sort}
     ${limit}`;
 
@@ -52,7 +57,10 @@ function meta(req) {
     if (req.query.searchByName !== undefined) {
       searchSql = "%" + req.query.searchByName + "%";
     }
-    const sql = `SELECT COUNT(*) AS totaldata FROM products p WHERE p.name ILIKE $1`;
+    const qcategory = !isNan(req.query.category)
+      ? ` , category_id = ${req.query.category}`
+      : "";
+    const sql = `SELECT COUNT(*) AS totaldata FROM products p WHERE p.name ILIKE $1 ${qcategory}`;
 
     const values = [searchSql];
     db.query(sql, values, (error, result) => {
