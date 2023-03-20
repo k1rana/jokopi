@@ -19,6 +19,7 @@ async function login(req, res) {
       password,
       userInfo.rows[0].password
     );
+    console.log(password);
     if (!isPasswordValid)
       return res.status(401).json({
         msg: "Email atau password salah!",

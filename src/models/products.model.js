@@ -25,7 +25,8 @@ function index(req) {
     const sql = `SELECT 
     p.id, 
     p.name, 
-    p.price, 
+    p.price,
+    p.img, 
     p.category_id, 
     c.name AS category_name FROM products p 
     LEFT JOIN categories c ON p.category_id = c.id

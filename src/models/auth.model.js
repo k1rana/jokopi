@@ -38,6 +38,7 @@ function createUser(client, body) {
     const { email, password, phone_number } = body;
     const encryptedPass = await bcrypt.hash(password, 15);
     const sql = `INSERT INTO users (email, password, phone_number) VALUES ($1, $2, $3) RETURNING id`;
+    console.log(password);
     client.query(sql, [email, encryptedPass, phone_number], (err, result) => {
       if (err) return reject(err);
       resolve(result);
