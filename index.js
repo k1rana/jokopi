@@ -13,7 +13,11 @@ const app = express();
 
 const { APP_PORT } = process.env;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms")
