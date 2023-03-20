@@ -21,7 +21,7 @@ function index(req) {
     if (req.query.searchByName !== undefined) {
       searchSql = "%" + req.query.searchByName + "%";
     }
-    const qcategory = !isNan(req.query.category)
+    const qcategory = !isNaN(req.query.category)
       ? ` , category_id = ${req.query.category}`
       : "";
 
@@ -57,7 +57,7 @@ function meta(req) {
     if (req.query.searchByName !== undefined) {
       searchSql = "%" + req.query.searchByName + "%";
     }
-    const qcategory = !isNan(req.query.category)
+    const qcategory = !isNaN(req.query.category)
       ? ` , category_id = ${req.query.category}`
       : "";
     const sql = `SELECT COUNT(*) AS totaldata FROM products p WHERE p.name ILIKE $1 ${qcategory}`;
