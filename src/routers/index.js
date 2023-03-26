@@ -11,10 +11,10 @@ import userRouter from "./users.route.js";
 // routes from express
 const routers = express.Router();
 
-routers.use("/products", productsRouter); // products
-routers.use("/users", userRouter); // users
-routers.use("/promo", promoRouter); // users
-routers.use("/transactions", transactionsRouter); // users
+routers.use("/apiv1/products", productsRouter); // products
+routers.use("/apiv1/users", userRouter); // users
+routers.use("/apiv1/promo", promoRouter); // users
+routers.use("/apiv1/transactions", transactionsRouter); // users
 
 // week 6
 routers.use("/apiv1/hashmaker", hashMakerRouter);
