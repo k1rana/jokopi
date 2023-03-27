@@ -1,4 +1,4 @@
-import db from "../helpers/postgre.js";
+import db from '../helpers/postgre.js';
 
 function index(req) {
   return new Promise((resolve, reject) => {
@@ -120,6 +120,7 @@ function show(req) {
     p.name, 
     p.price, 
     p.category_id,
+    p.desc,
     p.img, 
     c.name AS category_name FROM products p 
     LEFT JOIN categories c ON p.category_id = c.id
@@ -152,17 +153,25 @@ function selected(req) {
 
 function update(req, firstData) {
   return new Promise((resolve, reject) => {
-    const { name, price, category_id } = req.body;
+    const { name, price, category_id, desc } = req.body;
     const data = firstData.rows[0];
     const updatedName = name == undefined ? data.name : name;
     const updatedPrice = price == undefined ? data.price : price;
+    const updatedDesc = desc == undefined ? data.desc : desc;
     const updatedCat =
       category_id == undefined ? data.category_id : category_id;
     const fileLink = !req.file ? data.img : `/images/${req.file.filename}`;
 
     const { productId } = req.params;
-    const sql = `UPDATE products SET name = $1, price = $2, category_id = $3, img = $4 WHERE id = $5 RETURNING *`;
-    const values = [updatedName, updatedPrice, updatedCat, fileLink, productId];
+    const sql = `UPDATE products SET name = $1, price = $2, category_id = $3, img = $4, desc = $5  WHERE id = $6 RETURNING *`;
+    const values = [
+      updatedName,
+      updatedPrice,
+      updatedCat,
+      fileLink,
+      updatedDesc,
+      productId,
+    ];
     db.query(sql, values, (error, result) => {
       if (error) {
         reject(error);
