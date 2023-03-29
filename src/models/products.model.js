@@ -9,6 +9,10 @@ function index(req) {
         sortColumn = "name";
         break;
 
+      case "price":
+        sortColumn = "price";
+        break;
+
       case "category":
         sortColumn = "category_id";
         break;
