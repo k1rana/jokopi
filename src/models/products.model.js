@@ -25,7 +25,11 @@ function index(req) {
       ? ` AND category_id = ${req.query.category}`
       : "";
 
-    const limit = `LIMIT ${!isNaN(req.query.limit) ? req.query.limit : 10}`;
+    const limit = parseInt(req.query.limit) || 15;
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+    const limitsql = " LIMIT $2 OFFSET $3";
+
     const sql = `SELECT 
     p.id, 
     p.name, 
@@ -37,9 +41,9 @@ function index(req) {
     WHERE p.name ILIKE $1
     ${qcategory}
     ORDER BY ${sortColumn} ${sort}
-    ${limit}`;
+    ${limitsql}`;
 
-    const values = [searchSql];
+    const values = [searchSql, limit, offset];
     db.query(sql, values, (error, result) => {
       if (error) {
         reject(error);
