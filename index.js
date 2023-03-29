@@ -1,13 +1,13 @@
-import 'dotenv/config'; // enviroment
+import "dotenv/config"; // enviroment
 
-import cors from 'cors';
+import cors from "cors";
 // dotenv.config();
-import express from 'express'; // express js
-import mongoose from 'mongoose';
-import morgan from 'morgan';
+import express from "express"; // express js
+import mongoose from "mongoose";
+import morgan from "morgan";
 
 // routes
-import routers from './src/routers/index.js';
+import routers from "./src/routers/index.js";
 
 const app = express();
 
@@ -42,3 +42,5 @@ mongoose
     });
   })
   .catch((err) => console.log(err));
+
+export default app;
