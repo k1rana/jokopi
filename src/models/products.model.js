@@ -1,4 +1,4 @@
-import db from '../helpers/postgre.js';
+import db from "../helpers/postgre.js";
 
 function index(req) {
   return new Promise((resolve, reject) => {
@@ -91,6 +91,7 @@ function meta(req) {
         totalData,
         prev,
         next,
+        currentPage: page,
         totalPage,
       };
 
