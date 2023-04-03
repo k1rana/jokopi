@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
-import tokenModel from '../models/token.model.js';
+import tokenModel from "../models/token.model.js";
 
 async function check(req, res, next) {
   // take Auth.. from header
@@ -12,6 +12,7 @@ async function check(req, res, next) {
   const token = bearerToken.split(" ")[1];
 
   const tokenVerify = await tokenModel.get(token);
+  console.log(tokenVerify);
   if (!tokenVerify) {
     return res.status(403).json({
       msg: "JWT Rejected",
