@@ -5,6 +5,7 @@ import hashMakerRouter from "./hashMaker.route.js";
 // route files
 import productsRouter from "./products.route.js";
 import promoRouter from "./promo.route.js";
+import testRouter from "./tester.route.js";
 import transactionsRouter from "./transactions.route.js";
 import userRouter from "./users.route.js";
 
@@ -19,5 +20,6 @@ routers.use("/apiv1/transactions", transactionsRouter); // users
 // week 6
 routers.use("/apiv1/hashmaker", hashMakerRouter);
 routers.use("/apiv1/auth", authRouter);
+routers.use("/apiv1/test", testRouter);
 
 export default routers;
