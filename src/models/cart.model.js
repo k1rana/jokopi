@@ -1,14 +1,15 @@
-import db from '../helpers/postgre.js';
+import db from "../helpers/postgre.js";
 
 function getCartByUser(userId) {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT c.user_id, 
+    const sql = `SELECT p.name,
+    p.img,
     c.product_id, 
     c.size_id,
     count,
     p.price,
-    ps.price as incrementPrice,
-    p.price * ps.price as totalPrice FROM carts c 
+    ps.price as increment_price,
+    p.price * ps.price as total_price FROM carts c 
     JOIN products p ON c.product_id = p.id 
     JOIN product_size ps ON c.size_id = ps.id 
     WHERE user_id = $1`;
