@@ -1,4 +1,5 @@
 import db from '../helpers/postgre.js';
+import cartModel from '../models/cart.model.js';
 import userPanelModel from '../models/userPanel.model.js';
 
 async function getUserProfile(req, res) {
@@ -64,4 +65,20 @@ async function addCart(req, res) {
   }
 }
 
-export default { getUserProfile, addCart };
+async function getCartAll(req, res) {
+  try {
+    const { id } = req.authInfo;
+
+    const result = await cartModel.getCartByUser(id);
+    res.status(200).json({
+      data: result.rows,
+      msg: "Fetch success",
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Fetch error",
+    });
+  }
+}
+
+export default { getUserProfile, addCart, getCartAll };
