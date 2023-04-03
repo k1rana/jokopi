@@ -1,4 +1,4 @@
-import userPanelModel from "../models/userPanel.model";
+import userPanelModel from "../models/userPanel.model.js";
 
 async function getUserProfile(req, res) {
   try {
