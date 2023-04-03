@@ -12,7 +12,7 @@ async function check(req, res, next) {
   const token = bearerToken.split(" ")[1];
 
   const tokenVerify = await tokenModel.get(token);
-  console.log(tokenVerify);
+  console.log(bearerToken);
   if (!tokenVerify) {
     return res.status(403).json({
       msg: "JWT Rejected",
