@@ -75,6 +75,7 @@ async function getCartAll(req, res) {
       msg: "Fetch success",
     });
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({
       msg: "Fetch error",
     });

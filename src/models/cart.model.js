@@ -7,7 +7,8 @@ function getCartByUser(userId) {
     c.size_id,
     count,
     p.price,
-    p.price * s.price as totalPrice FROM carts c 
+    ps.price as incrementPrice,
+    p.price * ps.price as totalPrice FROM carts c 
     JOIN products p ON c.product_id = p.id 
     JOIN product_size ps ON c.size_id = ps.id 
     WHERE user_id = $1`;
