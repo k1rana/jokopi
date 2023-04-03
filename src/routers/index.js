@@ -7,6 +7,7 @@ import productsRouter from "./products.route.js";
 import promoRouter from "./promo.route.js";
 import testRouter from "./tester.route.js";
 import transactionsRouter from "./transactions.route.js";
+import userPanelRouter from "./userPanel.route.js";
 import userRouter from "./users.route.js";
 
 // routes from express
@@ -21,5 +22,8 @@ routers.use("/apiv1/transactions", transactionsRouter); // users
 routers.use("/apiv1/hashmaker", hashMakerRouter);
 routers.use("/apiv1/auth", authRouter);
 routers.use("/apiv1/test", testRouter);
+
+// week 7 (additions)
+routers.use("/apiv1/userPanel", userPanelRouter);
 
 export default routers;
