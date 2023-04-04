@@ -1,6 +1,6 @@
-import db from '../helpers/postgre.js';
-import cartModel from '../models/cart.model.js';
-import userPanelModel from '../models/userPanel.model.js';
+import db from "../helpers/postgre.js";
+import cartModel from "../models/cart.model.js";
+import userPanelModel from "../models/userPanel.model.js";
 
 async function getUserProfile(req, res) {
   try {
@@ -82,4 +82,17 @@ async function getCartAll(req, res) {
   }
 }
 
-export default { getUserProfile, addCart, getCartAll };
+async function updateProfile(req, res) {
+  const client = await db.connect();
+  try {
+    client.query("BEGIN");
+    client.query("UPDATE ");
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      msg: "Update error",
+    });
+  }
+}
+
+export default { getUserProfile, addCart, getCartAll, updateProfile };

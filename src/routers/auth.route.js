@@ -11,6 +11,7 @@ authRouter.delete("/logout", auth.check, authController.logout); // logout
 authRouter.patch("/editPassword", auth.check, authController.updatePassword); // change password
 
 authRouter.post("/forgotPass", authController.requestResetPass); // change password
+authRouter.get("/resetPass", authController.getDataResetPass);
 authRouter.patch("/resetPass", authController.resetPassword); // change password
 
 export default authRouter;

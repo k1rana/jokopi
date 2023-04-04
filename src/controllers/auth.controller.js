@@ -1,9 +1,9 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-import db from '../helpers/postgre.js';
-import authModel from '../models/auth.model.js';
-import tokenModel from '../models/token.model.js';
+import db from "../helpers/postgre.js";
+import authModel from "../models/auth.model.js";
+import tokenModel from "../models/token.model.js";
 
 // login controller
 async function login(req, res) {
@@ -195,6 +195,38 @@ async function requestResetPass(req, res) {
   }
 }
 
+async function getDataResetPass(req, res) {
+  try {
+    const result = await authModel.checkReqResetPass(req.query.verify);
+    if (result.rows.length < 1) {
+      res.status(400).json({
+        msg: "Verify not found",
+      });
+      return;
+    }
+    if (result.rows[0].code !== req.query.code) {
+      res.status(404).json({
+        msg: "Verify not found",
+      });
+      return;
+    }
+    const now = new Date();
+    if (result.rows[0].expired_at < now) {
+      return res.status(400).json({
+        msg: "The link has expired",
+      });
+    }
+    res.status(204).json({
+      msg: "Found reset pass link",
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+  }
+}
+
 async function resetPassword(req, res) {
   try {
     const result = await authModel.checkReqResetPass(req.query.verify);
@@ -247,4 +279,5 @@ export default {
   updatePassword,
   requestResetPass,
   resetPassword,
+  getDataResetPass,
 };
