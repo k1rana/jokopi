@@ -84,9 +84,38 @@ async function getCartAll(req, res) {
 
 async function updateProfile(req, res) {
   const client = await db.connect();
+  const {
+    display_name,
+    first_name,
+    last_name,
+    phone_number,
+    address,
+    birthdate,
+    email,
+    gender,
+  } = req.body;
   try {
-    client.query("BEGIN");
-    client.query("UPDATE ");
+    await client.query("BEGIN");
+    const sql = `
+    UPDATE user_profile SET 
+    display_name = $1,
+    first_name = $2, 
+    last_name = $3,  
+    address = $5, 
+    birthdate = $6, 
+    gender = $7
+    WHERE id = $8 RETURNING *`;
+    const values = [
+      display_name,
+      first_name,
+      last_name,
+      address,
+      birthdate,
+      gender,
+      userId,
+    ];
+    await client.query(sql, values);
+    client.query("COMMIT");
   } catch (error) {
     console.log(error.message);
     res.status(500).json({

@@ -1,9 +1,9 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-import db from "../helpers/postgre.js";
-import authModel from "../models/auth.model.js";
-import tokenModel from "../models/token.model.js";
+import db from '../helpers/postgre.js';
+import authModel from '../models/auth.model.js';
+import tokenModel from '../models/token.model.js';
 
 // login controller
 async function login(req, res) {
@@ -55,7 +55,7 @@ async function login(req, res) {
 
       res.status(200).json({
         msg: "Login successful!",
-        data: { token },
+        data: { token, id_user: userInfo.rows[0].id },
       });
     });
   } catch (err) {
