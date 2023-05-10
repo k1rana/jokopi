@@ -68,9 +68,10 @@ function meta(req) {
     if (req.query.searchByName !== undefined) {
       searchSql = "%" + req.query.searchByName + "%";
     }
-    const qcategory = !isNaN(req.query.category)
-      ? ` AND category_id = ${req.query.category}`
-      : "";
+    const qcategory =
+      !isNaN(req.query.category) && req.query.category
+        ? ` AND category_id = ${req.query.category}`
+        : "";
     const sql = `SELECT COUNT(*) AS totaldata FROM products p WHERE p.name ILIKE $1 ${qcategory}`;
 
     const values = [searchSql];
@@ -90,7 +91,9 @@ function meta(req) {
       if (req.query.orderBy != undefined)
         add += `&orderBy=${req.query.orderBy}`;
       if (req.query.sort != undefined) add += `&sort=${req.query.sort}`;
-      let next = `/products?page=${parseInt(q.page) + 1}`; // coba dicari
+      let next = `/products?page=${
+        parseInt(!isNaN(q.page) ? q.page : "1") + 1
+      }`; // coba dicari
       let prev = `/products?page=${parseInt(q.page) - 1}`; // coba dicari
 
       next += add;
