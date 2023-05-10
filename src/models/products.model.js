@@ -1,4 +1,4 @@
-import db from "../helpers/postgre.js";
+import db from '../helpers/postgre.js';
 
 function index(req) {
   return new Promise((resolve, reject) => {
@@ -25,9 +25,10 @@ function index(req) {
     if (req.query.searchByName !== undefined) {
       searchSql = "%" + req.query.searchByName + "%";
     }
-    const qcategory = !isNaN(req.query.category)
-      ? ` AND category_id = ${req.query.category}`
-      : "";
+    const qcategory =
+      !isNaN(req.query.category) && req.query.category
+        ? ` AND category_id = ${req.query.category}`
+        : "";
 
     const limit = parseInt(req.query.limit) || 15;
     const page = parseInt(req.query.page) || 1;
