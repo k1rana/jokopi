@@ -1,3 +1,4 @@
+import db from '../helpers/postgre.js';
 import transactionsModel from '../models/transactions.model.js';
 
 async function index(req, res) {
@@ -29,15 +30,53 @@ async function index(req, res) {
 }
 
 async function store(req, res) {
+  const { authInfo, body } = req;
+
+  const client = await db.connect();
   try {
-    const result = await transactionsModel.store(req);
+    await client.query("BEGIN");
+    const { payment_id, delivery_id } = body;
+    const result = await transactionsModel.createTransaction(
+      client,
+      body,
+      authInfo.id
+    );
+    const transactionId = result.rows[0].id;
+    await transactionsModel.createDetailTransaction(
+      client,
+      body,
+      transactionId
+    );
+    const total = await transactionsModel.grandTotal(client, transactionId);
+
+    const deliveryFee = await client.query(
+      `SELECT fee FROM deliveries WHERE id = $1`,
+      [delivery_id]
+    );
+    const paymentFee = await client.query(
+      `SELECT fee FROM payments WHERE id = $1`,
+      [payment_id]
+    );
+
+    const grandTotal =
+      Number(total) +
+      Number(deliveryFee.rows[0].fee) +
+      Number(paymentFee.rows[0].fee);
+
+    await transactionsModel.updateGrandTotal(client, transactionId, grandTotal);
+
+    await client.query("COMMIT");
+    client.release();
     res.status(201).json({
-      data: result.rows,
-      msg: "Create Success",
+      status: 201,
+      msg: "Create Transaction Success",
     });
   } catch (err) {
     console.log(err.message);
+    await client.query("ROLLBACK");
+    client.release();
     res.status(500).json({
+      status: 500,
       msg: "Internal Server Error",
     });
   }

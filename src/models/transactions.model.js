@@ -40,6 +40,91 @@ function list(id_transaction) {
   });
 }
 
+const createTransaction = (client, body, userId) => {
+  return new Promise((resolve, reject) => {
+    const { payment_id, delivery_id, promo_id, notes, status_id } = body;
+    const sql =
+      "INSERT INTO transactions (user_id, payment_id, delivery_id, promo_id, notes, status_id) values ($1, $2, $3, $4, $5, $6) RETURNING id";
+    const values = [
+      userId,
+      payment_id,
+      delivery_id,
+      promo_id || 0,
+      notes,
+      status_id,
+    ];
+    client.query(sql, values, (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+};
+
+const createDetailTransaction = (client, body, transactionId) => {
+  return new Promise(async (resolve, reject) => {
+    const { products } = body;
+    let sql = `INSERT INTO transaction_product_size (transaction_id, product_id, size_id, qty, subtotal) values`;
+    let values = [];
+    for (let i = 0; i < products.length; i++) {
+      const { product_id, size_id, quantity } = products[i];
+      const resultProduct = await client.query(
+        `SELECT price FROM products WHERE id = $1`,
+        [product_id]
+      );
+      const resultSize = await client.query(
+        `SELECT price FROM product_size WHERE id = $1`,
+        [size_id]
+      );
+      const subtotal =
+        resultProduct.rows[0].price * resultSize.rows[0].price * quantity;
+
+      if (values.length) sql += ", ";
+      sql += `($${1 + 5 * i}, $${2 + 5 * i}, $${3 + 5 * i}, $${4 + 5 * i}, $${
+        5 + 5 * i
+      })`;
+      values.push(transactionId, product_id, size_id, quantity, subtotal);
+    }
+
+    // console.log(sql);
+    // console.log(values);
+    await client.query(sql, values, (err) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+};
+
+const grandTotal = (client, transactionId) => {
+  return new Promise((resolve, reject) => {
+    client.query(
+      "SELECT SUM(subtotal) as total_subtotal FROM transaction_product_size WHERE transaction_id = $1",
+      [transactionId],
+      (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        const totalSubtotal = result.rows[0].total_subtotal;
+        resolve(totalSubtotal);
+      }
+    );
+  });
+};
+
+const updateGrandTotal = (client, transactionId, grandTotal) => {
+  return new Promise((resolve, reject) => {
+    client.query(
+      "UPDATE transactions SET grand_total = $2 WHERE id = $1 ",
+      [transactionId, grandTotal],
+      (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
+      }
+    );
+  });
+};
+
 const store = (req) => {
   return new Promise((resolve, reject) => {
     const sql = `INSERT INTO history 
@@ -142,4 +227,8 @@ export default {
   update,
   destroy,
   list,
+  createDetailTransaction,
+  createTransaction,
+  grandTotal,
+  updateGrandTotal,
 };

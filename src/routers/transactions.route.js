@@ -1,10 +1,11 @@
 import express from 'express';
 
 import transactionsController from '../controllers/transactions.controller.js';
+import auth from '../middlewares/auth.js';
 
 const transactionsRouter = express.Router();
 
-transactionsRouter.post("/", transactionsController.store); // create
+transactionsRouter.post("/", auth.check, transactionsController.store); // create
 transactionsRouter.get("/", transactionsController.index); // read
 
 transactionsRouter.get("/:transactionsId", transactionsController.show); // read
