@@ -112,10 +112,36 @@ async function destroy(req, res) {
   }
 }
 
+async function priceSize(req, res) {
+  try {
+    const result = await productModel.priceSize();
+    if (result.rows.length === 0) {
+      res.status(404).json({
+        status: 404,
+        data: [],
+        msg: "Data not found",
+      });
+      return;
+    }
+    res.status(200).json({
+      status: 200,
+      data: result.rows,
+      msg: "Success fetch data",
+    });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({
+      status: 500,
+      msg: "Internal Server Error",
+    });
+  }
+}
+
 export default {
   index,
   show,
   store,
   update,
   destroy,
+  priceSize,
 };

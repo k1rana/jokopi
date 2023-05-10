@@ -212,6 +212,19 @@ function destroy(req) {
   });
 }
 
+function priceSize() {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT * FROM product_size ORDER BY id ASC`;
+    db.query(sql, (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(result);
+    });
+  });
+}
+
 export default {
   index,
   meta,
@@ -220,4 +233,5 @@ export default {
   store,
   update,
   destroy,
+  priceSize,
 };
