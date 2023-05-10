@@ -26,7 +26,9 @@ function index(req) {
       searchSql = "%" + req.query.searchByName + "%";
     }
     const qcategory =
-      !isNaN(req.query.category) && req.query.category
+      !isNaN(req.query.category) &&
+      req.query.category &&
+      req.query.category !== ""
         ? ` AND category_id = ${req.query.category}`
         : "";
 
