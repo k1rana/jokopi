@@ -66,7 +66,7 @@ const createDetailTransaction = (client, body, transactionId) => {
     let sql = `INSERT INTO transaction_product_size (transaction_id, product_id, size_id, qty, subtotal) values`;
     let values = [];
     for (let i = 0; i < products.length; i++) {
-      const { product_id, size_id, quantity } = products[i];
+      const { product_id, size_id, qty } = products[i];
       const resultProduct = await client.query(
         `SELECT price FROM products WHERE id = $1`,
         [product_id]
@@ -76,13 +76,13 @@ const createDetailTransaction = (client, body, transactionId) => {
         [size_id]
       );
       const subtotal =
-        resultProduct.rows[0].price * resultSize.rows[0].price * quantity;
+        resultProduct.rows[0].price * resultSize.rows[0].price * qty;
 
       if (values.length) sql += ", ";
       sql += `($${1 + 5 * i}, $${2 + 5 * i}, $${3 + 5 * i}, $${4 + 5 * i}, $${
         5 + 5 * i
       })`;
-      values.push(transactionId, product_id, size_id, quantity, subtotal);
+      values.push(transactionId, product_id, size_id, qty, subtotal);
     }
 
     // console.log(sql);
