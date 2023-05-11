@@ -3,13 +3,42 @@ import db from '../helpers/postgre.js';
 function index(req) {
   return new Promise((resolve, reject) => {
     const limit = `LIMIT ${!isNaN(req.query.limit) ? req.query.limit : 10}`;
-    const sql = `SELECT t.id, u.email as receiver_email, up.display_name as receiver_name, ps.code as payment_code, ps.fee as payment_fee, d.name as delivery, d.fee as delivery_fee
-    FROM transactions t
+    const sql = `SELECT 
+    t.id, 
+    u.email as receiver_email, 
+    up.display_name as receiver_name, 
+    pm.id as payment_id, 
+    pm.fee as payment_fee, 
+    d.name as delivery, 
+    d.fee as delivery_fee,
+    t.grand_total,
+    json_agg(
+      json_build_object(
+        'product_id', p.id,
+        'product_name', p.name,
+        'product_img', p.img,
+        'size_id', ps.id,
+        'size', ps.name,
+        'qty', tps.qty
+      )
+    ) as products
+  FROM 
+    transactions t
     JOIN users u ON t.user_id = u.id
     JOIN user_profile up ON t.user_id = up.user_id
-    JOIN payments ps ON t.payment_code = ps.code
+    JOIN payments pm ON t.payment_id = pm.id
     JOIN deliveries d ON t.delivery_id = d.id
-    ${limit}`;
+    JOIN transaction_product_size tps ON tps.transaction_id = t.id
+    JOIN products p ON tps.product_id = p.id
+    JOIN product_size ps ON tps.size_id = ps.id
+  GROUP BY 
+    t.id, 
+    u.email, 
+    up.display_name, 
+    pm.id, 
+    pm.fee, 
+    d.name, 
+    d.fee`;
 
     db.query(sql, (error, result) => {
       if (error) {

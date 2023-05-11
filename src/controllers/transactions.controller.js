@@ -5,12 +5,6 @@ async function index(req, res) {
   try {
     const result = await transactionsModel.index(req);
     const transactions = result.rows;
-    for (let i = 0; i < transactions.length; i++) {
-      const transactionId = transactions[i].id;
-      const productsResult = await transactionsModel.list(transactionId);
-      const products = productsResult.rows;
-      transactions[i].products = products;
-    }
     if (result.rows.length === 0) {
       res.status(404).json({
         data: transactions,
@@ -19,11 +13,14 @@ async function index(req, res) {
       return;
     }
     res.status(200).json({
+      status: 200,
+      msg: "Success get data",
       data: result.rows,
     });
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
+      status: 500,
       msg: "Internal Server Error",
     });
   }

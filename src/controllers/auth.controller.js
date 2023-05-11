@@ -32,15 +32,14 @@ async function login(req, res) {
       role: userInfo.rows[0].role_id,
     };
 
-    const expiresIn =
-      rememberMe === "true" ? 7 * 24 * 60 * 60 * 1000 : 10 * 1000; // 7 hari : 10 menit
+    const expiresIn = rememberMe === "true" ? 7 * 24 * 60 * 60 : 24 * 60; // 7 hari : 10 menit
     const jwtOptions = { expiresIn };
 
     jwt.sign(payload, process.env.JWT_SECRET_KEY, jwtOptions, (err, token) => {
       if (err) throw err;
 
       let currentDate = new Date();
-      let expirationDate = new Date(currentDate.getTime() + expiresIn); // Menambahkan 7 hari ke tanggal saat ini
+      let expirationDate = new Date(currentDate.getTime() + expiresIn * 1000); // Menambahkan 7 hari ke tanggal saat ini
 
       tokenModel.store(
         {
@@ -53,7 +52,8 @@ async function login(req, res) {
         }
       );
 
-      res.status(200).json({
+      res.status(201).json({
+        status: 201,
         msg: "Login successful!",
         data: { token, id_user: userInfo.rows[0].id },
       });
@@ -61,6 +61,7 @@ async function login(req, res) {
   } catch (err) {
     console.log(err);
     res.status(500).json({
+      status: 500,
       msg: "Internal Server Error",
     });
   }
@@ -129,11 +130,13 @@ async function logout(req, res) {
       throw new Error("Token not valid");
     }
     res.status(200).json({
+      status: "200",
       msg: "Logout Success",
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
+      status: "500",
       msg: "Internal Server Error",
     });
   }
