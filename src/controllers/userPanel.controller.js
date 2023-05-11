@@ -1,6 +1,7 @@
-import db from "../helpers/postgre.js";
-import cartModel from "../models/cart.model.js";
-import userPanelModel from "../models/userPanel.model.js";
+import uploader from '../helpers/cloudinary.js';
+import db from '../helpers/postgre.js';
+import cartModel from '../models/cart.model.js';
+import userPanelModel from '../models/userPanel.model.js';
 
 async function getUserProfile(req, res) {
   try {
@@ -94,31 +95,64 @@ async function updateProfile(req, res) {
     email,
     gender,
   } = req.body;
+  const { id } = req.authInfo;
+  const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+  const regexPhone =
+    /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/g;
+
+  if (email && !email.match(regexEmail))
+    return res.status(422).json({ msg: "Invalid email input" });
+  if (phone_number && !phone_number.match(regexPhone))
+    return res.status(422).json({ msg: "Invalid phone numbers" });
   try {
     await client.query("BEGIN");
-    const sql = `
+    const result = await userPanelModel.getUserProfile(id);
+
+    const upload = await uploader(req, "profile", id);
+
+    const sql_profile = `
     UPDATE user_profile SET 
     display_name = $1,
     first_name = $2, 
     last_name = $3,  
-    address = $5, 
-    birthdate = $6, 
-    gender = $7
-    WHERE id = $8 RETURNING *`;
-    const values = [
-      display_name,
-      first_name,
-      last_name,
-      address,
-      birthdate,
-      gender,
-      userId,
+    address = $4, 
+    birthdate = $5, 
+    gender = $6,
+    img = $7
+    WHERE user_id = $8 RETURNING *`;
+    const values_profile = [
+      display_name || result.rows[0].display_name,
+      first_name || result.rows[0].first_name,
+      last_name || result.rows[0].last_name,
+      address || result.rows[0].address,
+      birthdate || result.rows[0].birthdate,
+      gender || result.rows[0].gender,
+      upload.data?.secure_url || result.rows[0].img,
+      id,
     ];
-    await client.query(sql, values);
+    await client.query(sql_profile, values_profile);
+
+    const sql_user = `
+    UPDATE users SET 
+    email = $1,
+    phone_number = $2
+    WHERE id = $3 RETURNING *`;
+    const values_user = [
+      email || result.rows[0].email,
+      phone_number || result.rows[0].phone_number,
+      id,
+    ];
+    await client.query(sql_user, values_user);
+
     client.query("COMMIT");
+    res.status(200).json({
+      status: 200,
+      msg: "Success update data",
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({
+      status: 500,
       msg: "Update error",
     });
   }

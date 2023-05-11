@@ -8,8 +8,13 @@ const userPanelRouter = express.Router();
 
 userPanelRouter.get("/profile", auth.check, userPanelController.getUserProfile); // login
 userPanelRouter.get("/cart", auth.check, userPanelController.getCartAll); // login
-userPanelRouter.patch("/cart", auth.check, userPanelController.addCart); // 
+userPanelRouter.patch("/cart", auth.check, userPanelController.addCart); //
 
-userPanelRouter.patch("/profile", auth.check, memoryUpload, userPanelController.updateProfile);
+userPanelRouter.patch(
+  "/profile",
+  auth.check,
+  memoryUpload,
+  userPanelController.updateProfile
+);
 
 export default userPanelRouter;

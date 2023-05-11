@@ -120,7 +120,6 @@ function show(req) {
     const sql = `SELECT 
     u.id, 
     u.email, 
-    u.password, 
     u.phone_number,
     p.display_name,
     p.first_name,
