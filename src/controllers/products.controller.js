@@ -1,3 +1,6 @@
+import crypto from 'crypto';
+
+import uploader from '../helpers/cloudinary.js';
 import productModel from '../models/products.model.js';
 
 async function index(req, res) {
@@ -13,6 +16,7 @@ async function index(req, res) {
     const result = await productModel.index(req);
     if (result.rows.length === 0) {
       res.status(404).json({
+        status: 404,
         data: result.rows,
         msg: "Product Tidak Ditemukan",
       });
@@ -20,12 +24,15 @@ async function index(req, res) {
     }
 
     res.status(200).json({
+      status: 200,
+      msg: "Fetch success",
       meta: metaResult,
       data: result.rows,
     });
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
+      status: 200,
       msg: "Internal Server Error",
     });
   }
@@ -33,14 +40,19 @@ async function index(req, res) {
 
 async function store(req, res) {
   try {
+    const randomString = crypto.randomBytes(3).toString("hex").substring(0, 5);
+    const upload = await uploader(req, "product", randomString);
+    req._uploader = upload;
     const result = await productModel.store(req);
     res.status(201).json({
-      data: result.rows,
+      status: 201,
       msg: "Create Success",
+      data: result.rows,
     });
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
+      status: 500,
       msg: "Internal Server Error",
     });
   }
@@ -54,16 +66,19 @@ async function show(req, res) {
     const result = await productModel.show(req);
     if (result.rows.length === 0) {
       res.status(404).json({
+        status: 404,
         msg: "Data not found",
       });
       return;
     }
     res.status(200).json({
+      status: 200,
       data: result.rows,
     });
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
+      status: 500,
       msg: "Internal Server Error",
     });
   }
@@ -74,18 +89,23 @@ async function update(req, res) {
     const data = await productModel.selected(req);
     if (data.rows.length === 0) {
       res.status(404).json({
-        msg: "Data not found",
+        status: 404,
+        msg: "Product not found",
       });
       return;
     }
+    const upload = await uploader(req, "product", req.params.productId);
+    req._uploader = upload;
     const result = await productModel.update(req, data);
     res.status(200).json({
+      status: 200,
       data: result.rows,
       msg: "Update success",
     });
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
+      status: 500,
       msg: "Internal Server Error",
     });
   }
@@ -101,12 +121,14 @@ async function destroy(req, res) {
       return;
     }
     res.status(200).json({
+      status: 200,
       data: result.rows,
       msg: "Data was destroyed",
     });
   } catch (err) {
     console.log(err.message);
     res.status(500).json({
+      status: 500,
       msg: "Internal Server Error",
     });
   }

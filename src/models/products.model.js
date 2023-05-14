@@ -116,11 +116,21 @@ function meta(req) {
 
 const store = (req) => {
   return new Promise((resolve, reject) => {
-    const fileLink = !req.file ? null : `/images/${req.file.filename}`;
-    const sql =
-      "INSERT INTO products (name, price, category_id, img) VALUES ($1, $2, $3, $4) RETURNING *";
+    const fileLink = !req.file ? null : req._uploader.data?.secure_url;
+    const sql = `INSERT INTO products 
+      (name, price, category_id, img, "desc") 
+    VALUES 
+      ($1, $2, $3, $4, $5) 
+    RETURNING *`;
+
     const data = req.body;
-    const values = [data.name, data.price, data.category_id, fileLink];
+    const values = [
+      data.name,
+      data.price,
+      data.category_id,
+      fileLink,
+      data.desc,
+    ];
     db.query(sql, values, (err, result) => {
       if (err) return reject(err);
       resolve(result);
@@ -175,10 +185,11 @@ function update(req, firstData) {
     const updatedDesc = desc == undefined ? data.desc : desc;
     const updatedCat =
       category_id == undefined ? data.category_id : category_id;
-    const fileLink = !req.file ? data.img : `/images/${req.file.filename}`;
+    const fileLink = !req.file ? data.img : req._uploader.data?.secure_url;
+    console.log(updatedDesc);
 
     const { productId } = req.params;
-    const sql = `UPDATE products SET name = $1, price = $2, category_id = $3, img = $4, desc = $5  WHERE id = $6 RETURNING *`;
+    const sql = `UPDATE products SET name = $1, price = $2, category_id = $3, img = $4, "desc" = $5  WHERE id = $6 RETURNING *`;
     const values = [
       updatedName,
       updatedPrice,

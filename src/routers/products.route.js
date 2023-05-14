@@ -2,7 +2,7 @@ import express from 'express';
 
 import productController from '../controllers/products.controller.js';
 import auth from '../middlewares/auth.js';
-import { singleUpload } from '../middlewares/imageUpload.js';
+import memoryUpload from '../middlewares/memoryUpload.js';
 
 const productsRouter = express.Router();
 
@@ -15,7 +15,7 @@ productsRouter.post(
   "/",
   auth.check,
   auth.admin,
-  singleUpload("image"),
+  memoryUpload,
   productController.store
 ); // create
 
@@ -23,7 +23,7 @@ productsRouter.patch(
   "/:productId",
   auth.check,
   auth.admin,
-  singleUpload("image"),
+  memoryUpload,
   productController.update
 ); // update
 
