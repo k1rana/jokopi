@@ -32,7 +32,7 @@ async function login(req, res) {
       role: userInfo.rows[0].role_id,
     };
 
-    const expiresIn = rememberMe === "true" ? 7 * 24 * 60 * 60 : 24 * 60; // 7 hari : 10 menit
+    const expiresIn = rememberMe === "true" ? 7 * 24 * 60 * 60 : 24 * 60 * 60; // 7 hari : 1 hari
     const jwtOptions = { expiresIn };
 
     jwt.sign(payload, process.env.JWT_SECRET_KEY, jwtOptions, (err, token) => {
