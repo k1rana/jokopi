@@ -1,7 +1,8 @@
-import uploader from '../helpers/cloudinary.js';
-import db from '../helpers/postgre.js';
-import cartModel from '../models/cart.model.js';
-import userPanelModel from '../models/userPanel.model.js';
+import uploader from "../helpers/cloudinary.js";
+import db from "../helpers/postgre.js";
+import cartModel from "../models/cart.model.js";
+import transactionsModel from "../models/transactions.model.js";
+import userPanelModel from "../models/userPanel.model.js";
 
 async function getUserProfile(req, res) {
   try {
@@ -158,4 +159,38 @@ async function updateProfile(req, res) {
   }
 }
 
-export default { getUserProfile, addCart, getCartAll, updateProfile };
+async function getTrx(req, res) {
+  const { id } = req.authInfo;
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.limit) || 10;
+
+    const offset = (page - 1) * perPage;
+    console.log(page, perPage, offset);
+
+    const meta = await transactionsModel.getMetaTransactionByUserId(
+      id,
+      perPage,
+      page
+    );
+    const result = await transactionsModel.getTransactionByUserId(
+      id,
+      perPage,
+      offset
+    );
+    res.status(200).json({
+      status: 200,
+      msg: "Fetch success",
+      meta,
+      data: result.rows,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      status: 500,
+      msg: "Fetch error",
+    });
+  }
+}
+
+export default { getUserProfile, addCart, getCartAll, updateProfile, getTrx };

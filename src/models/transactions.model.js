@@ -1,8 +1,8 @@
-import db from '../helpers/postgre.js';
+import db from "../helpers/postgre.js";
 
 function index(req) {
   return new Promise((resolve, reject) => {
-    const limit = `LIMIT ${!isNaN(req.query.limit) ? req.query.limit : 10}`;
+    // const limit = `LIMIT ${!isNaN(req.query.limit) ? req.query.limit : 10}`;
     const sql = `SELECT 
     t.id, 
     u.email as receiver_email, 
@@ -21,7 +21,8 @@ function index(req) {
         'size', ps.name,
         'qty', tps.qty
       )
-    ) as products
+    ) as products,
+    count(*) OVER() as total_count
   FROM 
     transactions t
     JOIN users u ON t.user_id = u.id
@@ -178,16 +179,153 @@ const store = (req) => {
   });
 };
 
+const getTransactionByUserId = (userId, perPage, offset) => {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT 
+    t.id, 
+    u.email as receiver_email, 
+    up.display_name as receiver_name, 
+    pm.id as payment_id, 
+    pm.fee as payment_fee, 
+    d.name as delivery, 
+    d.fee as delivery_fee,
+    t.grand_total,
+    json_agg(
+      json_build_object(
+        'product_id', p.id,
+        'product_name', p.name,
+        'product_img', p.img,
+        'size_id', ps.id,
+        'size', ps.name,
+        'qty', tps.qty,
+        'subtotal', tps.subtotal
+      )
+    ) as products
+FROM 
+    transactions t
+    JOIN users u ON t.user_id = u.id
+    JOIN user_profile up ON t.user_id = up.user_id
+    JOIN payments pm ON t.payment_id = pm.id
+    JOIN deliveries d ON t.delivery_id = d.id
+    JOIN transaction_product_size tps ON tps.transaction_id = t.id
+    JOIN products p ON tps.product_id = p.id
+    JOIN product_size ps ON tps.size_id = ps.id
+  WHERE 
+    t.user_id = $1
+  GROUP BY 
+    t.id, 
+    u.email, 
+    up.display_name, 
+    pm.id, 
+    pm.fee, 
+    d.name, 
+    d.fee
+    ORDER BY t.id DESC
+  LIMIT $2
+  OFFSET $3;
+    `;
+    const values = [userId, perPage, offset];
+    db.query(sql, values, (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(result);
+    });
+  });
+};
+
+const getMetaTransactionByUserId = (userId, perPage, page) => {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT COUNT(*) as total_data  FROM transactions WHERE user_id = $1`;
+    db.query(sql, [userId], (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      const totalData = result.rows[0].total_data;
+      const totalPage = Math.ceil(result.rows[0].total_data / perPage);
+
+      function getPrevLink(baseUrl, limit, page) {
+        if (page === 1) {
+          return null;
+        } else {
+          const prevPage = page - 1;
+          const prevUrl = `${baseUrl}?limit=${limit}&page=${prevPage}`;
+          return prevUrl;
+        }
+      }
+
+      function getNextLink(baseUrl, limit, page, totalPage) {
+        if (page >= totalPage) {
+          return null;
+        } else {
+          const nextPage = page + 1;
+          const nextUrl = `${baseUrl}?limit=${limit}&page=${nextPage}`;
+          return nextUrl;
+        }
+      }
+
+      const baseUrl = "/apiv1/userPanel/transactions";
+      const prevLink = getPrevLink(baseUrl, perPage, page);
+      const nextLink = getNextLink(baseUrl, perPage, page, totalPage);
+
+      const meta = {
+        totalData,
+        perPage: perPage,
+        currentPage: page,
+        totalPage,
+        prev: prevLink,
+        next: nextLink,
+      };
+      resolve(meta);
+    });
+  });
+};
+
 function show(req) {
   return new Promise((resolve, reject) => {
     const sql = `SELECT 
-    h.*,
-    p.name AS payment_name, 
-    p.fee AS payment_fee
-    FROM history h 
-    LEFT JOIN payment_method p ON h.payment_method = p.code
-    WHERE h.id = $1`;
-    const values = [req.params.historyId];
+    t.id, 
+    u.email as receiver_email, 
+    up.display_name as receiver_name, 
+    pm.id as payment_id, 
+    pm.fee as payment_fee, 
+    d.name as delivery, 
+    d.fee as delivery_fee,
+    t.grand_total,
+    json_agg(
+      json_build_object(
+        'product_id', p.id,
+        'product_name', p.name,
+        'product_img', p.img,
+        'size_id', ps.id,
+        'size', ps.name,
+        'qty', tps.qty,
+        'subtotal', tps.subtotal
+      )
+    ) as products
+  FROM 
+    transactions t
+    JOIN users u ON t.user_id = u.id
+    JOIN user_profile up ON t.user_id = up.user_id
+    JOIN payments pm ON t.payment_id = pm.id
+    JOIN deliveries d ON t.delivery_id = d.id
+    JOIN transaction_product_size tps ON tps.transaction_id = t.id
+    JOIN products p ON tps.product_id = p.id
+    JOIN product_size ps ON tps.size_id = ps.id
+  WHERE 
+    t.id = $1
+  GROUP BY 
+    t.id, 
+    u.email, 
+    up.display_name, 
+    pm.id, 
+    pm.fee, 
+    d.name, 
+    d.fee`;
+    const values = [req.params.transactionsId];
     db.query(sql, values, (error, result) => {
       if (error) {
         reject(error);
@@ -257,6 +395,8 @@ export default {
   destroy,
   list,
   createDetailTransaction,
+  getTransactionByUserId,
+  getMetaTransactionByUserId,
   createTransaction,
   grandTotal,
   updateGrandTotal,
