@@ -1,14 +1,15 @@
-import express from 'express';
+import express from "express";
 
-import authRouter from './auth.route.js';
-import hashMakerRouter from './hashMaker.route.js';
+import adminRouter from "./admin.route.js";
+import authRouter from "./auth.route.js";
+import hashMakerRouter from "./hashMaker.route.js";
 // route files
-import productsRouter from './products.route.js';
-import promoRouter from './promo.route.js';
-import testRouter from './tester.route.js';
-import transactionsRouter from './transactions.route.js';
-import userPanelRouter from './userPanel.route.js';
-import userRouter from './users.route.js';
+import productsRouter from "./products.route.js";
+import promoRouter from "./promo.route.js";
+import testRouter from "./tester.route.js";
+import transactionsRouter from "./transactions.route.js";
+import userPanelRouter from "./userPanel.route.js";
+import userRouter from "./users.route.js";
 
 // routes from express
 const routers = express.Router();
@@ -26,9 +27,12 @@ routers.use("/apiv1/test", testRouter);
 // week 7 (additions)
 routers.use("/apiv1/userPanel", userPanelRouter);
 
+// week 11 (additions)
+routers.use("/apiv1/adminPanel", adminRouter);
+
 routers.get("/", (req, res) => {
   res.status(200).json({
-    status: "200",
+    status: 200,
     msg: "Welcome to Rest API jokopi app!",
     contributors: [
       {
