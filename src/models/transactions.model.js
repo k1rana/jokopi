@@ -309,7 +309,10 @@ const getTransactionByUserId = (userId, perPage, offset) => {
     up.display_name as receiver_name, 
     pm.id as payment_id, 
     pm.fee as payment_fee, 
-    d.name as delivery, 
+    d.name as delivery_name,
+    t.shipping_address as delivery_address,
+    s.name as status_name,
+    t.status_id as status_id,
     d.fee as delivery_fee,
     t.grand_total,
     json_agg(
@@ -327,6 +330,7 @@ FROM
     transactions t
     JOIN users u ON t.user_id = u.id
     JOIN user_profile up ON t.user_id = up.user_id
+    JOIN status s ON t.status_id = s.id
     JOIN payments pm ON t.payment_id = pm.id
     JOIN deliveries d ON t.delivery_id = d.id
     JOIN transaction_product_size tps ON tps.transaction_id = t.id
@@ -338,7 +342,9 @@ FROM
     t.id, 
     u.email, 
     up.display_name, 
-    pm.id, 
+    pm.id,
+    s.name,
+    s.id,
     pm.fee, 
     d.name, 
     d.fee
