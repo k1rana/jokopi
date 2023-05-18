@@ -72,16 +72,16 @@ function list(id_transaction) {
 
 const createTransaction = (client, body, userId) => {
   return new Promise((resolve, reject) => {
-    const { payment_id, delivery_id, promo_id, notes, status_id } = body;
+    const { payment_id, delivery_id, promo_id, notes, address } = body;
     const sql =
-      "INSERT INTO transactions (user_id, payment_id, delivery_id, promo_id, notes, status_id) values ($1, $2, $3, $4, $5, $6) RETURNING id";
+      "INSERT INTO transactions (user_id, payment_id, delivery_id, promo_id, notes, shipping_address) values ($1, $2, $3, $4, $5, $6) RETURNING id";
     const values = [
       userId,
       payment_id,
       delivery_id,
       promo_id || 0,
       notes,
-      status_id,
+      address,
     ];
     client.query(sql, values, (err, result) => {
       if (err) return reject(err);
@@ -175,6 +175,128 @@ const store = (req) => {
     db.query(sql, values, (err, result) => {
       if (err) return reject(err);
       resolve(result);
+    });
+  });
+};
+
+const getTransactions = ({ status_id }, perPage, offset) => {
+  return new Promise((resolve, reject) => {
+    let add = "";
+    const values = [perPage, offset];
+    if (status_id) {
+      add = "WHERE t.status_id = $3";
+      values.push(status_id);
+    }
+
+    const sql = `SELECT 
+    t.id, 
+    u.email as receiver_email, 
+    up.display_name as receiver_name, 
+    t.shipping_address as delivery_address,
+    t.notes as notes,
+    t.status_id as status_id,
+    s.name as status_name,
+    pm.id as payment_id, 
+    pm.fee as payment_fee, 
+    d.name as delivery_name, 
+    d.fee as delivery_fee,
+    t.grand_total,
+    json_agg(
+      json_build_object(
+        'product_id', p.id,
+        'product_name', p.name,
+        'product_img', p.img,
+        'size_id', ps.id,
+        'size', ps.name,
+        'qty', tps.qty,
+        'subtotal', tps.subtotal
+      )
+    ) as products
+    FROM 
+      transactions t
+      JOIN users u ON t.user_id = u.id
+      JOIN status s ON t.status_id = s.id
+      JOIN user_profile up ON t.user_id = up.user_id
+      JOIN payments pm ON t.payment_id = pm.id
+      JOIN deliveries d ON t.delivery_id = d.id
+      JOIN transaction_product_size tps ON tps.transaction_id = t.id
+      JOIN products p ON tps.product_id = p.id
+      JOIN product_size ps ON tps.size_id = ps.id
+    ${add}
+    GROUP BY 
+      t.id, 
+      u.email, 
+      up.display_name, 
+      pm.id, 
+      pm.fee,
+      s.id, 
+      d.name, 
+      d.fee
+      ORDER BY t.id DESC
+    LIMIT $1
+    OFFSET $2;
+    `;
+    db.query(sql, values, (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(result);
+    });
+  });
+};
+
+const getMetaTransactions = ({ status_id }, perPage, page) => {
+  return new Promise((resolve, reject) => {
+    let add = "";
+    const values = [];
+    if (status_id) {
+      add = "WHERE status_id = $1";
+      values.push(status_id);
+    }
+    const sql = `SELECT COUNT(*) as total_data  FROM transactions t ${add}`;
+    db.query(sql, values, (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      const totalData = result.rows[0].total_data;
+      const totalPage = Math.ceil(result.rows[0].total_data / perPage);
+
+      function getPrevLink(baseUrl, limit, page) {
+        if (page === 1) {
+          return null;
+        } else {
+          const prevPage = page - 1;
+          const prevUrl = `${baseUrl}?limit=${limit}&page=${prevPage}`;
+          return prevUrl;
+        }
+      }
+
+      function getNextLink(baseUrl, limit, page, totalPage) {
+        if (page >= totalPage) {
+          return null;
+        } else {
+          const nextPage = page + 1;
+          const nextUrl = `${baseUrl}?limit=${limit}&page=${nextPage}`;
+          return nextUrl;
+        }
+      }
+
+      const baseUrl = "/apiv1/userPanel/transactions";
+      const prevLink = getPrevLink(baseUrl, perPage, page);
+      const nextLink = getNextLink(baseUrl, perPage, page, totalPage);
+
+      const meta = {
+        totalData,
+        perPage: perPage,
+        currentPage: page,
+        totalPage,
+        prev: prevLink,
+        next: nextLink,
+      };
+      resolve(meta);
     });
   });
 };
@@ -290,9 +412,15 @@ function show(req) {
     t.id, 
     u.email as receiver_email, 
     up.display_name as receiver_name, 
+    t.shipping_address as delivery_address,
+    t.notes as notes,
+    t.status_id as status_id,
+    s.name as status_name,
+    t.transaction_time as transaction_time,
     pm.id as payment_id, 
+    pm.name as payment_name, 
     pm.fee as payment_fee, 
-    d.name as delivery, 
+    d.name as delivery_name, 
     d.fee as delivery_fee,
     t.grand_total,
     json_agg(
@@ -306,25 +434,29 @@ function show(req) {
         'subtotal', tps.subtotal
       )
     ) as products
-  FROM 
-    transactions t
-    JOIN users u ON t.user_id = u.id
-    JOIN user_profile up ON t.user_id = up.user_id
-    JOIN payments pm ON t.payment_id = pm.id
-    JOIN deliveries d ON t.delivery_id = d.id
-    JOIN transaction_product_size tps ON tps.transaction_id = t.id
-    JOIN products p ON tps.product_id = p.id
-    JOIN product_size ps ON tps.size_id = ps.id
-  WHERE 
-    t.id = $1
-  GROUP BY 
-    t.id, 
-    u.email, 
-    up.display_name, 
-    pm.id, 
-    pm.fee, 
-    d.name, 
-    d.fee`;
+    FROM 
+      transactions t
+      JOIN users u ON t.user_id = u.id
+      JOIN status s ON t.status_id = s.id
+      JOIN user_profile up ON t.user_id = up.user_id
+      JOIN payments pm ON t.payment_id = pm.id
+      JOIN deliveries d ON t.delivery_id = d.id
+      JOIN transaction_product_size tps ON tps.transaction_id = t.id
+      JOIN products p ON tps.product_id = p.id
+      JOIN product_size ps ON tps.size_id = ps.id
+    WHERE
+      t.id = $1
+    GROUP BY 
+      t.id, 
+      u.email, 
+      up.display_name, 
+      pm.id, 
+      pm.fee,
+      s.id, 
+      d.name, 
+      d.fee,
+      pm.name
+      ORDER BY t.id DESC`;
     const values = [req.params.transactionsId];
     db.query(sql, values, (error, result) => {
       if (error) {
@@ -415,4 +547,6 @@ export default {
   grandTotal,
   updateGrandTotal,
   changeStatusToDone,
+  getTransactions,
+  getMetaTransactions,
 };

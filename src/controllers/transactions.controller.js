@@ -3,18 +3,28 @@ import transactionsModel from "../models/transactions.model.js";
 
 async function index(req, res) {
   try {
-    const result = await transactionsModel.index(req);
-    const transactions = result.rows;
-    if (result.rows.length === 0) {
-      res.status(404).json({
-        data: transactions,
-        msg: "History not found",
-      });
-      return;
-    }
+    const page = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.limit) || 10;
+
+    const offset = (page - 1) * perPage;
+    console.log(page, perPage, offset);
+
+    const { status_id } = req.query;
+
+    const meta = await transactionsModel.getMetaTransactions(
+      { status_id },
+      perPage,
+      page
+    );
+    const result = await transactionsModel.getTransactions(
+      { status_id },
+      perPage,
+      offset
+    );
     res.status(200).json({
       status: 200,
-      msg: "Success get data",
+      msg: "Fetch success",
+      meta,
       data: result.rows,
     });
   } catch (err) {
