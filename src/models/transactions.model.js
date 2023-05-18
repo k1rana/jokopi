@@ -387,6 +387,20 @@ function destroy(req) {
   });
 }
 
+const changeStatusToDone = (ids) => {
+  return new Promise((resolve, reject) => {
+    const sql = `UPDATE transactions
+    SET status_id = 3
+    WHERE id = ANY($1::int[]) RETURNING *`;
+    db.query(sql, [ids], (err, result) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(result);
+    });
+  });
+};
+
 export default {
   index,
   show,
@@ -400,4 +414,5 @@ export default {
   createTransaction,
   grandTotal,
   updateGrandTotal,
+  changeStatusToDone,
 };

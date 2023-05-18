@@ -1,5 +1,5 @@
-import db from '../helpers/postgre.js';
-import transactionsModel from '../models/transactions.model.js';
+import db from "../helpers/postgre.js";
+import transactionsModel from "../models/transactions.model.js";
 
 async function index(req, res) {
   try {
@@ -147,10 +147,34 @@ async function destroy(req, res) {
   }
 }
 
+async function statusDone(req, res) {
+  try {
+    const { transactions } = req.body;
+    const id_array = transactions.split(",").map(function (item) {
+      return item.trim();
+    });
+
+    const result = await transactionsModel.changeStatusToDone(id_array);
+
+    res.status(200).json({
+      status: 200,
+      msg: "Fetch data success",
+      result: result.rows,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      status: 500,
+      msg: "Internal Server Error",
+    });
+  }
+}
+
 export default {
   index,
   show,
   store,
   update,
   destroy,
+  statusDone,
 };

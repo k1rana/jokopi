@@ -2,3 +2,5 @@ node_modules
 .env
 .env.*
 public/images/*
+service-account.json
+firebase.json
