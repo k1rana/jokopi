@@ -14,4 +14,8 @@ authRouter.post("/forgotPass", authController.requestResetPass); // change passw
 authRouter.get("/resetPass", authController.getDataResetPass);
 authRouter.patch("/resetPass", authController.resetPassword); // change password
 
+// manage firebase token
+authRouter.post("/link-fcm", auth.check, authController.linkFcm);
+authRouter.delete("/unlink-fcm", auth.check, authController.unlinkFcm);
+
 export default authRouter;

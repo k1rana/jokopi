@@ -120,6 +120,29 @@ function deleteReqResetPass(userId) {
   });
 }
 
+function linkToken(fcm_token, user_id, expired_time) {
+  return new Promise((resolve, reject) => {
+    const sql = `INSERT INTO fcm_tokens (token, user_id, expired_time)
+                   VALUES ($1, $2, $3)
+                 ON CONFLICT (token, user_id)
+                 DO UPDATE SET expired_time = EXCLUDED.expired_time`;
+    db.query(sql, [fcm_token, user_id, expired_time], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+}
+
+function unlinkToken(fcm_token, user_id) {
+  return new Promise((resolve, reject) => {
+    const sql = `DELETE FROM fcm_tokens WHERE token = $1 AND user_id = $2 RETURNING *`;
+    db.query(sql, [fcm_token, user_id], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+}
+
 export default {
   getUserInfo,
   createUser,
@@ -132,4 +155,6 @@ export default {
   checkUserResetPass,
   deleteReqResetPass,
   selectUser,
+  linkToken,
+  unlinkToken,
 };

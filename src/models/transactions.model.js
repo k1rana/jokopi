@@ -1,4 +1,4 @@
-import db from "../helpers/postgre.js";
+import db from '../helpers/postgre.js';
 
 function index(req) {
   return new Promise((resolve, reject) => {
@@ -232,7 +232,7 @@ const getTransactions = ({ status_id }, perPage, offset) => {
       s.id, 
       d.name, 
       d.fee
-      ORDER BY t.id DESC
+    ORDER BY t.id ASC
     LIMIT $1
     OFFSET $2;
     `;

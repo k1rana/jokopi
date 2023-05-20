@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+import notification from '../helpers/notification.js';
 import db from '../helpers/postgre.js';
 import authModel from '../models/auth.model.js';
 import tokenModel from '../models/token.model.js';
@@ -275,6 +276,50 @@ async function resetPassword(req, res) {
   }
 }
 
+async function linkFcm(req, res) {
+  try {
+    const { id, exp } = req.authInfo;
+    const { token } = req.body;
+    const expired_at = new Date(exp * 1000);
+    await notification.verifyFCMToken(token);
+    await authModel.linkToken(token, id, expired_at);
+    res.status(200).json({
+      status: 201,
+      msg: "Token linked or updated",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      status: 500,
+      msg: "Internal Server Error",
+    });
+  }
+}
+
+async function unlinkFcm(req, res) {
+  try {
+    const { id } = req.authInfo;
+    const { token } = req.body;
+    const result = await authModel.unlinkToken(token, id);
+    if (result.rows.length < 1) {
+      return res.status(404).json({
+        status: 404,
+        msg: "Token and user id not linked",
+      });
+    }
+    res.status(200).json({
+      status: 201,
+      msg: "Token unlinked successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      status: 500,
+      msg: "Internal Server Error",
+    });
+  }
+}
+
 export default {
   login,
   register,
@@ -283,4 +328,6 @@ export default {
   requestResetPass,
   resetPassword,
   getDataResetPass,
+  linkFcm,
+  unlinkFcm,
 };
