@@ -1,5 +1,7 @@
-import db from "../helpers/postgre.js";
-import transactionsModel from "../models/transactions.model.js";
+import notification from '../helpers/notification.js';
+import db from '../helpers/postgre.js';
+import fcmModel from '../models/fcm.model.js';
+import transactionsModel from '../models/transactions.model.js';
 
 async function index(req, res) {
   try {
@@ -71,6 +73,18 @@ async function store(req, res) {
       Number(paymentFee.rows[0].fee);
 
     await transactionsModel.updateGrandTotal(client, transactionId, grandTotal);
+
+    const result_token = await fcmModel.getAdminTokenFcm();
+    if (result_token.rows.length > 0) {
+      const tokens = result_token.rows.map((obj) => obj.token);
+      console.log(tokens);
+      // remote notification
+      await notification.send(tokens, {
+        title: "New Order Received!",
+        body: "Hey dude! new order received, check it out!",
+      });
+    }
+    // await client.query("ROLLBACK");
 
     await client.query("COMMIT");
     client.release();
@@ -165,6 +179,18 @@ async function statusDone(req, res) {
     });
 
     const result = await transactionsModel.changeStatusToDone(id_array);
+
+    const ids = result.rows.map((item) => item.user_id);
+
+    const result_token = await fcmModel.getTokenFcmByUserId(ids);
+    if (result_token.rows.length > 0) {
+      const tokens = result_token.rows.map((obj) => obj.token);
+      // remote notification
+      await notification.send(tokens, {
+        title: "Your order has been processed!",
+        body: "Hey coffeeholic, your order has been has been successfully processed! Check it out :)",
+      });
+    }
 
     res.status(200).json({
       status: 200,

@@ -6,6 +6,9 @@ const Notification = new Messaging(firebase);
 
 const send = async (token, { title, body, channel = "general" }) => {
   try {
+    if (typeof token === "string") {
+      token = [token];
+    }
     const bodyRandom = [
       "Don't miss out on limited offers! Get our exclusive specialty coffee packs, including a wide selection of coffee variants, at a special price.",
       "Good morning, coffee lovers! Enjoy your favorite coffee at a special price for the first purchase every day. Starting today, your life is blessed with delicious coffee.",
@@ -18,8 +21,8 @@ const send = async (token, { title, body, channel = "general" }) => {
       title: title || "Hey Coffeeholic!",
       body: body || bodyRandom[Math.floor(Math.random() * bodyRandom.length)],
     };
-    await Notification.send({
-      token,
+    await Notification.sendEachForMulticast({
+      tokens: token,
       notification,
       data: {
         channel,
