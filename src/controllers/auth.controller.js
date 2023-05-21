@@ -300,6 +300,7 @@ async function unlinkFcm(req, res) {
   try {
     const { id } = req.authInfo;
     const { token } = req.body;
+    console.log(token, id);
     const result = await authModel.unlinkToken(token, id);
     if (result.rows.length < 1) {
       return res.status(404).json({

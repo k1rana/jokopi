@@ -27,10 +27,11 @@ Related: [React](https://github.com/nyannss/jokopi-react) | [React Native](https
 - Upload Images
 - CRUD (Products, User, Transactions)
 - Whitelisting JWT
+- Remote Notification to Android & iOS App
 
 ## Technologies Used
 
-[![My Skills](https://skillicons.dev/icons?i=nodejs,express,mongodb,postgres,vercel)](https://skillicons.dev)
+[![My Skills](https://skillicons.dev/icons?i=nodejs,express,mongodb,postgres,vercel,firebase)](https://skillicons.dev)
 
 - Node.js
 - Express.js
@@ -39,7 +40,8 @@ Related: [React](https://github.com/nyannss/jokopi-react) | [React Native](https
 - Cloudinary (for storing images)
 - JSON Web Token (authorization)
 - Vercel (for deploying)
-- sharp & datauri (for converting image)
+- Firebase Admin (for sending remote notification)
+- sharp & datauri (for converting image format)
 - and other npm packages (morgan, dotenv, bcrypt, cors, multer)
 
 ## Installation
@@ -89,6 +91,12 @@ Related: [React](https://github.com/nyannss/jokopi-react) | [React Native](https
      CLOUDINARY_NAME = (put your cloudinary name)
      CLOUDINARY_KEY = (put your cloudinary key)
      CLOUDINARY_SECRET = (put your cloudinary secret)
+     ```
+
+   - Firebase Admin (generate service-account json and encode base64) [[see more]](<https://firebase.google.com/docs/admin/setup#initialize_the_sdk_in_non-google_environments>)
+
+     ```
+     GOOGLE_APPLICATION_CREDENTIALS = (your encoded service-account.json content)
      ```
 
 ## Postman Documentation
