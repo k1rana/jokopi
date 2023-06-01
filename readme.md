@@ -40,6 +40,7 @@ Related: [React](https://github.com/nyannss/jokopi-react) | [React Native](https
 - Cloudinary (for storing images)
 - JSON Web Token (authorization)
 - Vercel (for deploying)
+- Nodemailer
 - Firebase Admin (for sending remote notification)
 - sharp & datauri (for converting image format)
 - and other npm packages (morgan, dotenv, bcrypt, cors, multer)
@@ -91,6 +92,14 @@ Related: [React](https://github.com/nyannss/jokopi-react) | [React Native](https
      CLOUDINARY_NAME = (put your cloudinary name)
      CLOUDINARY_KEY = (put your cloudinary key)
      CLOUDINARY_SECRET = (put your cloudinary secret)
+     ```
+
+   - SMTP Authentication for sending email (use gmail for free) [[more info]](<https://sendgrid.com/blog/what-is-an-smtp-server/>)
+
+     ```env
+    SMTP_HOST = (put your smtp host)
+    SMTP_EMAIL = (put your smtp email/username)
+    SMTP_PASS = (put your smtp password)
      ```
 
    - Firebase Admin (generate service-account json and encode base64) [[see more]](<https://firebase.google.com/docs/admin/setup#initialize_the_sdk_in_non-google_environments>)

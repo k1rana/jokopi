@@ -1,8 +1,9 @@
-import express from 'express';
+import express from "express";
 
-import testController from '../controllers/test.controller.js';
-import notification from '../helpers/notification.js';
-import memoryUpload from '../middlewares/memoryUpload.js';
+import testController from "../controllers/test.controller.js";
+import sendForgotPass from "../helpers/forgotpass.js";
+import notification from "../helpers/notification.js";
+import memoryUpload from "../middlewares/memoryUpload.js";
 
 const testRouter = express.Router();
 
@@ -22,6 +23,25 @@ testRouter.post("/fcm", async (req, res) => {
     res.status(200).json({
       status: 200,
       msg: "Success notified",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      status: 500,
+      msg: "Internal Server Error",
+    });
+  }
+});
+testRouter.post("/email", async (req, res) => {
+  try {
+    await sendForgotPass({
+      to: "tewaje3539@ratedane.com",
+      url: "https://jokopi.vercel.app",
+    });
+
+    res.status(200).json({
+      status: 200,
+      msg: "Success send email",
     });
   } catch (error) {
     console.log(error);
