@@ -97,20 +97,23 @@ Related: [React](https://github.com/nyannss/jokopi-react) | [React Native](https
    - SMTP Authentication for sending email (use gmail for free) [[more info]](<https://sendgrid.com/blog/what-is-an-smtp-server/>)
 
      ```env
+
     SMTP_HOST = (put your smtp host)
     SMTP_EMAIL = (put your smtp email/username)
     SMTP_PASS = (put your smtp password)
-     ```
+
+     ```env
 
    - Firebase Admin (generate service-account json and encode base64) [[see more]](<https://firebase.google.com/docs/admin/setup#initialize_the_sdk_in_non-google_environments>)
 
-     ```
+     ```env
+
      GOOGLE_APPLICATION_CREDENTIALS = (your encoded service-account.json content)
      ```
 
 ## Postman Documentation
 
-You can download the documentation from [this link](https://) or [this one](https://).
+You can see the documentation from [Link 1]([https://](https://elements.getpostman.com/redirect?entityId=26209677-a4d5190f-2074-486b-9977-e7fc0911b6d3&entityType=collection)) or [Link 2](https://).
 
 ## Table Structure
 
@@ -125,4 +128,4 @@ This project using ISC License
 ## Report
 
 Any error report you can pull request
-or contact: nyannss@proton.me
+or contact: <nyannss@proton.me>

@@ -57,4 +57,86 @@ const getDailyAverage = () => {
   });
 };
 
-export default { getMonthlyReport, getDailyAverage };
+const getReports = (view) => {
+  return new Promise((resolve, reject) => {
+    const status_done = "3";
+    let sql;
+    switch (view) {
+      case "daily":
+        sql = `SELECT 
+                    EXTRACT(YEAR FROM d.day_date) AS year,
+                    EXTRACT(MONTH FROM d.day_date) AS month,
+                    EXTRACT(DAY FROM d.day_date) AS day,
+                    TO_CHAR(d.day_date, 'Dy') AS day_label,
+                    COALESCE(SUM(t.grand_total), 0) AS total_sum
+                FROM
+                    (
+                    SELECT 
+                        generate_series(
+                          CURRENT_DATE - INTERVAL '6 days',
+                          CURRENT_DATE,
+                          INTERVAL '1 day'
+                        ) AS day_date
+                    ) AS d
+                LEFT JOIN transactions t
+                    ON DATE_TRUNC('day', t.transaction_time AT TIME ZONE '+07:00') = d.day_date
+                    AND t.status_id = $1
+                GROUP BY year, month, day, day_label
+                ORDER BY year, month, day
+    `;
+        break;
+
+      case "weekly":
+        console.log("yes");
+        sql = `SELECT 
+                EXTRACT(YEAR FROM w.week_start) AS year,
+                EXTRACT(WEEK FROM w.week_start) AS week,
+                CONCAT('Week ', EXTRACT(WEEK FROM w.week_start)) AS week_label,
+                COALESCE(SUM(t.grand_total), 0) AS total_sum
+            FROM
+                (
+                SELECT 
+                    generate_series(
+                      DATE_TRUNC('week', NOW() AT TIME ZONE '+07:00') - INTERVAL '6 weeks',
+                      DATE_TRUNC('week', NOW() AT TIME ZONE '+07:00'),
+                      INTERVAL '1 week'
+                    ) AS week_start
+                ) AS w
+            LEFT JOIN transactions t
+                ON DATE_TRUNC('week', t.transaction_time AT TIME ZONE '+07:00') = w.week_start
+                AND t.status_id = $1
+            GROUP BY year, week, week_label
+            ORDER BY year, week;
+            `;
+        break;
+
+      default:
+        sql = `SELECT 
+                    EXTRACT(YEAR FROM DATE_TRUNC('month', m.month_date)) AS year,
+                    EXTRACT(MONTH FROM DATE_TRUNC('month', m.month_date)) AS month,
+                    TO_CHAR(m.month_date, 'Mon') AS month_label,
+                    COALESCE(SUM(t.grand_total), 0) AS total_sum
+                FROM
+                    (
+                    SELECT 
+                        generate_series(
+                        DATE_TRUNC('month', NOW() AT TIME ZONE '+07:00') - INTERVAL '5 months',
+                        DATE_TRUNC('month', NOW() AT TIME ZONE '+07:00'),
+                        '1 month'
+                        ) AS month_date
+                    ) AS m
+                LEFT JOIN transactions t
+                    ON DATE_TRUNC('month', t.transaction_time AT TIME ZONE '+07:00') = m.month_date
+                    AND t.status_id = $1
+                GROUP BY year, month, month_label
+                ORDER BY year, month`;
+        break;
+    }
+    db.query(sql, [status_done], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+};
+
+export default { getMonthlyReport, getDailyAverage, getReports };

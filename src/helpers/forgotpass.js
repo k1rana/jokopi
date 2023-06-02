@@ -1,14 +1,13 @@
 import fs from 'fs';
 import mustache from 'mustache';
 import { join } from 'path';
-import { fileURLToPath } from 'url';
 
 import transporter from '../configs/nodemailer.js';
 
 const sendForgotPass = ({ to, subject, url }) => {
   const data = { to, subject, url };
-  const currentFileUrl = import.meta.url;
-  const currentFilePath = fileURLToPath(currentFileUrl);
+  // const currentFileUrl = import.meta.url;
+  // const currentFilePath = fileURLToPath(currentFileUrl);
   const templatesPath = join(
     process.cwd(),
     "./src/helpers/templates/forgotpass.html"

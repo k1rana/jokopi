@@ -17,6 +17,7 @@ adminRouter.get(
   auth.check,
   auth.admin,
   adminController.dailyAverage
-); // login
+); // daily average
 
+adminRouter.get("/reports", auth.check, auth.admin, adminController.reports); // report by month, daily, weekly
 export default adminRouter;
