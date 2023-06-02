@@ -113,7 +113,7 @@ Related: [React](https://github.com/nyannss/jokopi-react) | [React Native](https
 
 ## Postman Documentation
 
-You can see the documentation from [Link 1]([https://](https://elements.getpostman.com/redirect?entityId=26209677-a4d5190f-2074-486b-9977-e7fc0911b6d3&entityType=collection)) or [Link 2](https://).
+You can see the documentation from [Link 1](https://elements.getpostman.com/redirect?entityId=26209677-a4d5190f-2074-486b-9977-e7fc0911b6d3&entityType=collection) or [Link 2](https://).
 
 ## Table Structure
 
