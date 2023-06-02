@@ -67,7 +67,7 @@ const getReports = (view) => {
                     EXTRACT(YEAR FROM d.day_date) AS year,
                     EXTRACT(MONTH FROM d.day_date) AS month,
                     EXTRACT(DAY FROM d.day_date) AS day,
-                    TO_CHAR(d.day_date, 'Dy') AS day_label,
+                    TO_CHAR(d.day_date, 'Dy') AS label,
                     COALESCE(SUM(t.grand_total), 0) AS total_sum
                 FROM
                     (
@@ -81,7 +81,7 @@ const getReports = (view) => {
                 LEFT JOIN transactions t
                     ON DATE_TRUNC('day', t.transaction_time AT TIME ZONE '+07:00') = d.day_date
                     AND t.status_id = $1
-                GROUP BY year, month, day, day_label
+                GROUP BY year, month, day, label
                 ORDER BY year, month, day
     `;
         break;
@@ -91,7 +91,7 @@ const getReports = (view) => {
         sql = `SELECT 
                 EXTRACT(YEAR FROM w.week_start) AS year,
                 EXTRACT(WEEK FROM w.week_start) AS week,
-                CONCAT('Week ', EXTRACT(WEEK FROM w.week_start)) AS week_label,
+                CONCAT('Week ', EXTRACT(WEEK FROM w.week_start)) AS label,
                 COALESCE(SUM(t.grand_total), 0) AS total_sum
             FROM
                 (
@@ -105,7 +105,7 @@ const getReports = (view) => {
             LEFT JOIN transactions t
                 ON DATE_TRUNC('week', t.transaction_time AT TIME ZONE '+07:00') = w.week_start
                 AND t.status_id = $1
-            GROUP BY year, week, week_label
+            GROUP BY year, week, label
             ORDER BY year, week;
             `;
         break;
@@ -114,7 +114,7 @@ const getReports = (view) => {
         sql = `SELECT 
                     EXTRACT(YEAR FROM DATE_TRUNC('month', m.month_date)) AS year,
                     EXTRACT(MONTH FROM DATE_TRUNC('month', m.month_date)) AS month,
-                    TO_CHAR(m.month_date, 'Mon') AS month_label,
+                    TO_CHAR(m.month_date, 'Mon') AS label,
                     COALESCE(SUM(t.grand_total), 0) AS total_sum
                 FROM
                     (
@@ -128,7 +128,7 @@ const getReports = (view) => {
                 LEFT JOIN transactions t
                     ON DATE_TRUNC('month', t.transaction_time AT TIME ZONE '+07:00') = m.month_date
                     AND t.status_id = $1
-                GROUP BY year, month, month_label
+                GROUP BY year, month, label
                 ORDER BY year, month`;
         break;
     }
