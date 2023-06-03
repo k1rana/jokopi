@@ -1,14 +1,21 @@
 import express from 'express';
 
 import promoController from '../controllers/promo.controller.js';
+import auth from '../middlewares/auth.js';
 
 const promoRouter = express.Router();
 
-promoRouter.post('/', promoController.store); // create
-promoRouter.get('/', promoController.index); // read
+promoRouter.post("/", auth.check, auth.admin, promoController.store); // create
+promoRouter.get("/", promoController.index); // read
+promoRouter.get("/check", promoController.checkCode); // read
 
-promoRouter.get('/:promoId', promoController.show); // read
-promoRouter.patch('/:promoId', promoController.update); // update
-promoRouter.delete('/:promoId', promoController.destroy); // delete
+promoRouter.get("/:promoId", promoController.show); // read
+promoRouter.patch("/:promoId", auth.check, auth.admin, promoController.update); // update
+promoRouter.delete(
+  "/:promoId",
+  auth.check,
+  auth.admin,
+  promoController.destroy
+); // delete
 
 export default promoRouter;
