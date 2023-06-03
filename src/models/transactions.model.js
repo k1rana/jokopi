@@ -232,7 +232,7 @@ const getTransactions = ({ status_id }, perPage, offset) => {
       s.id, 
       d.name, 
       d.fee
-    ORDER BY t.id ASC
+    ORDER BY t.id DESC
     LIMIT $1
     OFFSET $2;
     `;

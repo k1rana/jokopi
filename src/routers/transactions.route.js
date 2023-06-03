@@ -1,7 +1,7 @@
-import express from "express";
+import express from 'express';
 
-import transactionsController from "../controllers/transactions.controller.js";
-import auth from "../middlewares/auth.js";
+import transactionsController from '../controllers/transactions.controller.js';
+import auth from '../middlewares/auth.js';
 
 const transactionsRouter = express.Router();
 
@@ -20,7 +20,7 @@ transactionsRouter.patch(
   auth.admin,
   transactionsController.statusDone
 ); // change status
-transactionsRouter.patch("/:transactionsId", transactionsController.update); // update
-transactionsRouter.delete("/:transactionsId", transactionsController.destroy); // delete
+// transactionsRouter.patch("/:transactionsId", transactionsController.update); // update
+// transactionsRouter.delete("/:transactionsId", transactionsController.destroy); // delete
 
 export default transactionsRouter;
