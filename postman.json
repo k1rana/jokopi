@@ -1,0 +1,1382 @@
+{
+  "info": {
+    "_postman_id": "a4d5190f-2074-486b-9977-e7fc0911b6d3",
+    "name": "Jokopi Test API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "26209677",
+    "_collection_link": "https://www.postman.com/digital-squad-fw14/workspace/jokopi/collection/26209677-a4d5190f-2074-486b-9977-e7fc0911b6d3?action=share&creator=26209677&source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "rememberMe",
+                  "value": "true",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/auth/login",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "bandung354@gmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "87654321",
+                  "type": "text"
+                },
+                {
+                  "key": "phone_number",
+                  "value": "08516342334",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/auth/register",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/auth/logout",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "auth", "logout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Password",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "oldPassword",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "newPassword",
+                  "value": "12345",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/auth/editPassword",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "auth", "editPassword"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Request Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "tewaje3539@ratedane.com",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/auth/forgotPass/",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "auth", "forgotPass", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "newPassword",
+                  "value": "12345678",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/auth/resetPass/?verify=72c2208e7191c45330e30a17183e165d67de1f21668b7b2c&code=23087742",
+              "host": ["{{HOST}}"],
+              "path": ["auth", "resetPass", ""],
+              "query": [
+                {
+                  "key": "verify",
+                  "value": "72c2208e7191c45330e30a17183e165d67de1f21668b7b2c"
+                },
+                {
+                  "key": "code",
+                  "value": "23087742"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password Copy",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "newPassword",
+                  "value": "12345678",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/auth/resetPass/?verify=740df6be200c13ddd8641e5dd80f017f66b8a7c666b1a7a32e&code=34992477",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "auth", "resetPass", ""],
+              "query": [
+                {
+                  "key": "verify",
+                  "value": "740df6be200c13ddd8641e5dd80f017f66b8a7c666b1a7a32e"
+                },
+                {
+                  "key": "code",
+                  "value": "34992477"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "**Authentication**\n\nContain\n\n- Login\n- Register"
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Products (All include Sort & Search) Copy",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/products?orderBy=price&sort=desc",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "products"],
+              "query": [
+                {
+                  "key": "orderBy",
+                  "value": "price",
+                  "description": "id || price"
+                },
+                {
+                  "key": "sort",
+                  "value": "desc"
+                },
+                {
+                  "key": "searchByName",
+                  "value": "Kari",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "5",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "2",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Products (By ID)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/products/3",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "products", "3"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Products (By ID) Copy",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:7071/apiv1/products/prices",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "7071",
+              "path": ["apiv1", "products", "prices"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Products",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "name",
+                  "value": "Manggo Avocado Smoothies",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "17500",
+                  "type": "text"
+                },
+                {
+                  "key": "category_id",
+                  "value": "2",
+                  "description": "1 = coffee | 2 = non-coffee, 3 = food, 4 = add-ons",
+                  "type": "text"
+                },
+                {
+                  "key": "desc",
+                  "value": "Mango Avocado Smoothies are a delicious and nutritious way to start your day. Made with ripe mangoes and creamy avocados, this smoothie is packed with vitamins, minerals, and antioxidants. The combination of sweet and tangy mangoes and rich and buttery avocados creates a perfectly balanced flavor that's both refreshing and satisfying. Whether you're looking for a quick breakfast on-the-go or a healthy snack, our Mango Avocado Smoothies are a great choice. Try one today and discover the deliciousness for yourself!",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/products",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product By ID",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/home/ahann/Downloads/5490798_ccbdf985-275b-4519-a7c5-8e6f1334a3c8_452_452(1).jpg"
+                },
+                {
+                  "key": "name",
+                  "value": "Gethuk Lindri 2",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "price",
+                  "value": "16200",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "category_id",
+                  "value": "1",
+                  "description": "1 = Coffee, 2 = Non-Coffee, 3 = Food, 4= Add-ons",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "desc",
+                  "value": "Red Velvet is a rich and decadent beverage that's perfect for any sweet tooth. Made with a blend of cocoa and cream, this drink is smooth, velvety, and indulgent. Whether you're in the mood for a cozy night in or a special treat, our Red Velvet is a great choice. Plus, with its eye-catching red color and delicious flavor, it's sure to impress. Give it a try and satisfy your sweet cravings today!",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/products/16",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "products", "16"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete By ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/products/23",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "products", "23"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Users (All w/ sort)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:7071/users?orderBy=id&sort=desc&limit=5&page=3",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "7071",
+              "path": ["users"],
+              "query": [
+                {
+                  "key": "orderBy",
+                  "value": "id"
+                },
+                {
+                  "key": "sort",
+                  "value": "desc"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                },
+                {
+                  "key": "page",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Users (By ID)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/users/2",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "users", "2"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "test15@gmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "12345",
+                  "type": "text"
+                },
+                {
+                  "key": "phone_number",
+                  "value": "08637432454",
+                  "type": "text"
+                },
+                {
+                  "key": "role",
+                  "value": "",
+                  "description": "1 = member, 2 = admin",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/users",
+              "host": ["{{HOST}}"],
+              "path": ["users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Users (Update Profile)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edge/44.18363.8131"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "display_name",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "first_name",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "last_name",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "phone_number",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "address",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:7071/users/5",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "7071",
+              "path": ["users", "5"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete by ID",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edge/44.18363.8131"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:7071/users/20",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "7071",
+              "path": ["users", "20"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Promo",
+      "item": [
+        {
+          "name": "Promo (All include Sort & Search)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edge/44.18363.8131"
+              }
+            ],
+            "url": {
+              "raw": "{{HOST}}/apiv1/promo",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "promo"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "1",
+                  "description": "1-50",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "orderBy",
+                  "value": "id",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "desc",
+                  "disabled": true
+                },
+                {
+                  "key": "searchByName",
+                  "value": "espresso",
+                  "disabled": true
+                },
+                {
+                  "key": "available",
+                  "value": "true",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Promo (By ID)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edge/44.18363.8131"
+              }
+            ],
+            "url": {
+              "raw": "{{HOST}}/apiv1/promo/5",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "promo", "5"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Promo (Delete by ID)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edge/44.18363.8131"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:7071/promo/5",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "7071",
+              "path": ["promo", "5"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Promo (Update)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edge/44.18363.8131"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/home/ahann/Downloads/path1636.jpg"
+                },
+                {
+                  "key": "product_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "Veggie Free",
+                  "type": "text"
+                },
+                {
+                  "key": "desc",
+                  "value": "Veggie for free guys",
+                  "type": "text"
+                },
+                {
+                  "key": "discount",
+                  "value": "10",
+                  "description": "1-100",
+                  "type": "text"
+                },
+                {
+                  "key": "coupon_code",
+                  "value": "JAKARTA",
+                  "type": "text"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2023-06-10",
+                  "type": "text"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2023-06-12",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/promo/5",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "promo", "5"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Promo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edge/44.18363.8131"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "product_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "Veggie Free",
+                  "type": "text"
+                },
+                {
+                  "key": "desc",
+                  "value": "Veggie for free guys",
+                  "type": "text"
+                },
+                {
+                  "key": "discount",
+                  "value": "10",
+                  "type": "text"
+                },
+                {
+                  "key": "coupon_code",
+                  "value": "JAKARTA",
+                  "type": "text"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2023-06-10",
+                  "type": "text"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2023-06-12",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/promo/",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "promo", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check Promo Code",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/promo/check/?code=BURGERMUNCHIES",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "promo", "check", ""],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "BURGERMUNCHIES",
+                  "description": "enter the promo code"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Index",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edge/44.18363.8131"
+              }
+            ],
+            "url": {
+              "raw": "{{HOST}}/apiv1/transactions?page=1",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "transactions"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "desc",
+                  "disabled": true
+                },
+                {
+                  "key": "getByUserId",
+                  "value": "2",
+                  "disabled": true
+                },
+                {
+                  "key": "status_id",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "History (by ID)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edge/44.18363.8131"
+              }
+            ],
+            "url": {
+              "raw": "{{HOST}}/apiv1/transactions/17",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "transactions", "17"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "History (Update)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edge/44.18363.8131"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": 1,\n  \"product_id\": 2,\n  \"quantity\": 10,\n  \"discount\": 20,\n  \"promo_id\": 0,\n  \"payment_method\": \"BRIVA\",\n  \"shipping_address\": null,\n  \"delivery_method\": \"dineIn\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:7071/promo/5",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "7071",
+              "path": ["promo", "5"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "History (New/Insert)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edge/44.18363.8131"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_id\": 1,\n  \"delivery_id\": 2,\n  \"status_id\":3,\n  \"notes\": \"alamak\",\n  \"address\": \"\",\n    \"products\": [{\n      \"product_id\": 2,\n      \"size_id\":2,\n      \"qty\":4\n  }, {\n      \"product_id\": 3,\n      \"size_id\":1,\n      \"qty\":9\n  }]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/transactions",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "transactions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "History (Delete by ID)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edge/44.18363.8131"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:7071/history/9",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "7071",
+              "path": ["history", "9"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tools",
+      "item": [
+        {
+          "name": "Bcrypt Hash Generator",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "plainText",
+                  "value": "test1234",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/hashmaker",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "hashmaker"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Upload",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/home/ahann/Downloads/coffee-cup.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/test/upload",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "test", "upload"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test FCM",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "fcm",
+                  "value": "dPY21m8IRoKpT7n5giOTTg:APA91bElcsC10ezdcDqEtKfDAMpGZh06ICs106HOpQDtcuI8w01asFaCoTi2V-yb_D06XEaQD6nh1gLC2oaixe6uuFRpsHahhWdn0bgdYf2iw_FC9zfcQ0HxuFuEq_CC1W3mDgAWioqz",
+                  "type": "text"
+                },
+                {
+                  "key": "title",
+                  "value": "waduh.",
+                  "type": "text"
+                },
+                {
+                  "key": "body",
+                  "value": "buset nt lagi lur wkwkkw",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/test/fcm",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "test", "fcm"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/test/email",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "test", "email"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Panel",
+      "item": [
+        {
+          "name": "Get User Data Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/userPanel/profile",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "userPanel", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/userPanel/transactions",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "userPanel", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "-1",
+                  "description": "1 - total page",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "-1",
+                  "description": "< 25",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/home/ahann/Downloads/ezgif.com-webp-to-jpg.jpg"
+                },
+                {
+                  "key": "display_name",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "first_name",
+                  "value": "Haha lucu banget rek",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "last_name",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "address",
+                  "value": "",
+                  "description": "max 255",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "birthdate",
+                  "value": "2003-02-23",
+                  "description": "yyyy-mm-dd",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "gender",
+                  "value": "1",
+                  "description": "1 : male | 2 : female",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "description": "xxx@xxx.xxx",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "phone_number",
+                  "value": "5674",
+                  "description": "08XXXXXXXX",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/userPanel/profile",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "userPanel", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add to Cart",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"product_id\": 1,\n    \"cart\": [\n        {\n            \"size\": 1,\n            \"count\": 1\n        }\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/userPanel/cart",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "userPanel", "cart"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cart by User Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/userPanel/cart",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "userPanel", "cart"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin Panel",
+      "item": [
+        {
+          "name": "Monthly Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/adminPanel/monthlyReport",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "adminPanel", "monthlyReport"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Selling Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/adminPanel/reports?view",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "adminPanel", "reports"],
+              "query": [
+                {
+                  "key": "view",
+                  "value": null,
+                  "description": "monthly | weekly | daily"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Daily Average",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{HOST}}/apiv1/adminPanel/dailyAverage",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "adminPanel", "dailyAverage"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "admin@efbewe.com",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "password",
+                  "value": "test1234",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "rememberMe",
+                  "value": "true",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "transactions",
+                  "value": "60",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/transactions/changeStatus",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "transactions", "changeStatus"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "FCM",
+      "item": [
+        {
+          "name": "Link with an account",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "token",
+                  "value": "dPY21m8IRoKpT7n5giOTTg:APA91bElcsC10ezdcDqEtKfDAMpGZh06ICs106HOpQDtcuI8w01asFaCoTi2V-yb_D06XEaQD6nh1gLC2oaixe6uuFRpsHahhWdn0bgdYf2iw_FC9zfcQ0HxuFuEq_CC1W3mDgAWioqz",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/auth/link-fcm",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "auth", "link-fcm"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unlink token",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "token",
+                  "value": "dPY21m8IRoKpT7n5giOTTg:APA91bElcsC10ezdcDqEtKfDAMpGZh06ICs106HOpQDtcuI8w01asFaCoTi2V-yb_D06XEaQD6nh1gLC2oaixe6uuFRpsHahhWdn0bgdYf2iw_FC9zfcQ0HxuFuEq_CC1W3mDgAWioqz",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{HOST}}/apiv1/auth/unlink-fcm",
+              "host": ["{{HOST}}"],
+              "path": ["apiv1", "auth", "unlink-fcm"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{USER_TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "HOST",
+      "value": "localhost:7071",
+      "type": "string"
+    },
+    {
+      "key": "USER_TOKEN",
+      "value": "jokopi.vercel.app",
+      "type": "string"
+    },
+    {
+      "key": "ADMIN_TOKEN",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

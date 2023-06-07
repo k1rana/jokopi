@@ -1,6 +1,7 @@
 node_modules
 .env
-.env.*
+.env.dev
+.env.local
 public/images/*
 service-account.json
 firebase.json
