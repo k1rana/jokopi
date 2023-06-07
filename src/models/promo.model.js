@@ -1,4 +1,4 @@
-import db from '../helpers/postgre.js';
+import db from "../helpers/postgre.js";
 
 function index(req) {
   return new Promise((resolve, reject) => {
@@ -43,6 +43,7 @@ function index(req) {
     p.id, 
     p.name,
     p.desc,
+    p.img,
     c.price as original_price,
     c.price - (c.price* p.discount/100) as discounted_price,
     p.discount, 
@@ -160,15 +161,16 @@ function metaIndex(req) {
   });
 }
 
-const store = (req) => {
+const store = (req, file) => {
   return new Promise((resolve, reject) => {
     const sql = `INSERT INTO promo 
-      ("name", "desc", discount, start_date, end_date, coupon_code, size, delivery_methods, product_id) 
+      ("name", "desc", discount, start_date, end_date, coupon_code, product_id, img) 
       VALUES
-      ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *`;
 
     const data = req.body;
+    if (req.file) data.img = file.secure_url;
     const values = [
       data.name,
       data.desc,
@@ -176,9 +178,8 @@ const store = (req) => {
       data.start_date,
       data.end_date,
       data.coupon_code,
-      data.size,
-      data.delivery_methods,
       data.product_id,
+      data.img || null,
     ];
     db.query(sql, values, (err, result) => {
       if (err) return reject(err);
@@ -194,6 +195,7 @@ const checkCode = (code) => {
     p.id, 
     p.name,
     p.desc,
+    p.img,
     p.discount, 
     c.price as original_price,
     c.price - (c.price* p.discount/100) as discounted_price,
@@ -213,7 +215,7 @@ const checkCode = (code) => {
   });
 };
 
-function show(req) {
+function show(id) {
   return new Promise((resolve, reject) => {
     const sql = `SELECT 
     p.id, 
@@ -226,7 +228,7 @@ function show(req) {
     p.product_id FROM promo p 
     LEFT JOIN products c ON p.product_id = c.id
     WHERE p.id = $1`;
-    const values = [req.params.promoId];
+    const values = [id];
     db.query(sql, values, (error, result) => {
       if (error) {
         reject(error);
@@ -237,9 +239,10 @@ function show(req) {
   });
 }
 
-function update(req) {
+function update(req, file) {
   return new Promise((resolve, reject) => {
     const data = req.body;
+    if (req.file) data.img = file.secure_url;
     const { promoId } = req.params;
     const sql = `
     UPDATE promo SET 
@@ -249,10 +252,9 @@ function update(req) {
     start_date = $4, 
     end_date = $5, 
     coupon_code = $6, 
-    size = $7, 
-    delivery_methods = $8, 
-    product_id = $9 
-    WHERE id = $10
+    product_id = $7,
+    img = $8
+    WHERE id = $9
     RETURNING *`;
     const values = [
       data.name,
@@ -262,6 +264,7 @@ function update(req) {
       data.end_date,
       data.coupon_code,
       data.product_id,
+      data.img || null,
       promoId,
     ];
     db.query(sql, values, (error, result) => {

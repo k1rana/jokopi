@@ -1,4 +1,7 @@
-import promoModel from '../models/promo.model.js';
+import crypto from "crypto";
+
+import uploader from "../helpers/cloudinary.js";
+import promoModel from "../models/promo.model.js";
 
 async function index(req, res) {
   try {
@@ -27,10 +30,65 @@ async function index(req, res) {
 
 async function store(req, res) {
   try {
-    const result = await promoModel.store(req);
+    const {
+      product_id,
+      name,
+      desc,
+      discount,
+      coupon_code,
+      start_date,
+      end_date,
+    } = req.body;
+    if (
+      !product_id ||
+      !name ||
+      !desc ||
+      !discount ||
+      !coupon_code ||
+      !start_date ||
+      !end_date
+    )
+      return res.status(422).json({
+        status: 422,
+        msg: "Please input required form",
+      });
+    if (name.length < 6)
+      return res.status(422).json({
+        status: 422,
+        msg: "Name length minimum is 6",
+      });
+    if (desc.length < 10)
+      return res.status(422).json({
+        status: 422,
+        msg: "Description length minimum is 10",
+      });
+    if (coupon_code.length < 6)
+      return res.status(422).json({
+        status: 422,
+        msg: "Coupon code length minimun is 6",
+      });
+    if (discount < 1 || discount > 100)
+      return res.status(422).json({
+        status: 422,
+        msg: "Invalid discount input (must between 1-100)",
+      });
+
+    const now = new Date();
+    const startDate = new Date(start_date);
+    const endDate = new Date(end_date);
+    if (startDate < now || startDate > endDate)
+      return res.status(422).json({
+        status: 422,
+        msg: "Invalid event date input",
+      });
+    const randomString = crypto.randomBytes(3).toString("hex").substring(0, 5);
+    const upload = await uploader(req, "promo", randomString);
+    // console.log(upload);
+    const result = await promoModel.store(req, upload);
     res.status(201).json({
-      data: result.rows,
+      status: 201,
       msg: "Create Success",
+      data: result.rows,
     });
   } catch (err) {
     console.log(err.message);
@@ -42,7 +100,7 @@ async function store(req, res) {
 
 async function show(req, res) {
   try {
-    const result = await promoModel.show(req);
+    const result = await promoModel.show(req.params.promoId);
     if (result.rows.length === 0) {
       res.status(404).json({
         msg: "Data not found",
@@ -62,7 +120,15 @@ async function show(req, res) {
 
 async function update(req, res) {
   try {
-    const result = await promoModel.update(req);
+    const product = await promoModel.show(req.params.promoId);
+    if (product.rows.length < 1)
+      res.status(404).json({
+        status: 404,
+        msg: "Data not found",
+      });
+    const upload = await uploader(req, "promo", product.rows[0].id);
+
+    const result = await promoModel.update(req, upload);
     if (result.rows.length === 0) {
       res.status(404).json({
         msg: "Data not found",
