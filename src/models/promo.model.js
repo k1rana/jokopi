@@ -169,8 +169,9 @@ const store = (req, file) => {
       ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *`;
 
-    const data = req.body;
-    if (req.file) data.img = file.secure_url;
+    let data = req.body;
+    const fileLink = !req.file ? null : req._uploader.data?.secure_url;
+
     const values = [
       data.name,
       data.desc,
@@ -179,7 +180,7 @@ const store = (req, file) => {
       data.end_date,
       data.coupon_code,
       data.product_id,
-      data.img || null,
+      fileLink,
     ];
     db.query(sql, values, (err, result) => {
       if (err) return reject(err);
@@ -241,10 +242,33 @@ function show(id) {
   });
 }
 
-function update(req, file) {
+function update(req, firstData) {
   return new Promise((resolve, reject) => {
-    const data = req.body;
-    if (req.file) data.img = file.secure_url;
+    const {
+      name,
+      desc,
+      discount,
+      start_date,
+      end_date,
+      coupon_code,
+      product_id,
+    } = req.body;
+
+    const updatedData = {
+      name: !name || name === "" ? firstData.name : name,
+      desc: desc == undefined ? firstData.desc : desc,
+      discount: discount == undefined ? firstData.discount : discount,
+      start_date: start_date == undefined ? firstData.start_date : start_date,
+      end_date: end_date == undefined ? firstData.end_date : end_date,
+      coupon_code:
+        coupon_code == undefined ? firstData.coupon_code : coupon_code,
+      product_id: product_id == undefined ? firstData.product_id : product_id,
+      img:
+        !req.file || req.file === undefined
+          ? firstData.img
+          : req._uploader.data?.secure_url,
+    };
+
     const { promoId } = req.params;
     const sql = `
     UPDATE promo SET 
@@ -259,14 +283,14 @@ function update(req, file) {
     WHERE id = $9
     RETURNING *`;
     const values = [
-      data.name,
-      data.desc,
-      data.discount,
-      data.start_date,
-      data.end_date,
-      data.coupon_code,
-      data.product_id,
-      data.img || null,
+      updatedData.name,
+      updatedData.desc,
+      updatedData.discount,
+      updatedData.start_date,
+      updatedData.end_date,
+      updatedData.coupon_code,
+      updatedData.product_id,
+      updatedData.img,
       promoId,
     ];
     db.query(sql, values, (error, result) => {

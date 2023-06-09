@@ -82,8 +82,9 @@ async function store(req, res) {
       });
     const randomString = crypto.randomBytes(3).toString("hex").substring(0, 5);
     const upload = await uploader(req, "promo", randomString);
+    req._uploader = upload;
     // console.log(upload);
-    const result = await promoModel.store(req, upload);
+    const result = await promoModel.store(req);
     res.status(201).json({
       status: 201,
       msg: "Create Success",
@@ -126,8 +127,9 @@ async function update(req, res) {
         msg: "Data not found",
       });
     const upload = await uploader(req, "promo", product.rows[0].id);
+    req._uploader = upload;
 
-    const result = await promoModel.update(req, upload);
+    const result = await promoModel.update(req, product.rows[0]);
     if (result.rows.length === 0) {
       res.status(404).json({
         msg: "Data not found",
@@ -156,8 +158,9 @@ async function destroy(req, res) {
       return;
     }
     res.status(200).json({
+      status: 200,
+      msg: "Data destroyed successfully",
       data: result.rows,
-      msg: "Data was destroyed",
     });
   } catch (err) {
     console.log(err.message);
