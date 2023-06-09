@@ -161,7 +161,7 @@ function metaIndex(req) {
   });
 }
 
-const store = (req, file) => {
+const store = (req) => {
   return new Promise((resolve, reject) => {
     const sql = `INSERT INTO promo 
       ("name", "desc", discount, start_date, end_date, coupon_code, product_id, img) 
