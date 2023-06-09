@@ -221,11 +221,13 @@ function show(id) {
     p.id, 
     p.name,
     p.desc,
+    p.img,
     p.discount, 
     p.start_date,
     p.end_date,
     p.coupon_code,
-    p.product_id FROM promo p 
+    p.product_id,
+    c.name as product_name, c.img as product_img FROM promo p 
     LEFT JOIN products c ON p.product_id = c.id
     WHERE p.id = $1`;
     const values = [id];
