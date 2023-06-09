@@ -73,10 +73,9 @@ async function store(req, res) {
         msg: "Invalid discount input (must between 1-100)",
       });
 
-    const now = new Date();
     const startDate = new Date(start_date);
     const endDate = new Date(end_date);
-    if (startDate < now || startDate > endDate)
+    if (startDate > endDate)
       return res.status(422).json({
         status: 422,
         msg: "Invalid event date input",
