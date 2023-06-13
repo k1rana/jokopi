@@ -2,18 +2,17 @@
 
 ![alt text](./public/icon.png "jokopi")
 
-<h1>Jokopi</h1>
+<h1>jokopi.</h1>
 <h3 align="center">Rest API for jokopi app!</h3>
 
 [Demo](https://jokopi-react.vercel.app/) · [Related Projects](#related-projects)
 
-<hr>
 <h3 align="center">Powered by Vercel ⚡</h3>
-</div>
+</div><br>
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
+- [Overview](#overview)
 - [Tech Stack](#tech-stack)
 - [Features](#features)
 - [Getting Started](#getting-started)
@@ -26,9 +25,24 @@
 - [License](#license)
 - [Report](#report)
 
+## Overview
+
+Jokopi REST API is a backend server implementation designed for a coffee shop using the Express framework. It provides a robust and scalable solution for managing various aspects of a coffee shop's operations, such as menu items, orders, customer information, and more.
+
+The REST API follows the principles of Representational State Transfer (REST), which enables easy integration with various clients, including web and mobile applications. It utilizes the HTTP protocol for communication, allowing clients to perform operations such as retrieving, creating, updating, and deleting resources.
+
+### Features
+
+- Authorization & Authentication
+- Upload Images
+- CRUD (Products, User, Transactions, Promo)
+- Whitelisting JWT
+- Remote Notification to Android & iOS App
+- Error Handling & Validation
+
 ## Tech Stack
 
-[![My Skills](https://skillicons.dev/icons?i=nodejs,express,mongodb,postgres,vercel,firebase)](https://skillicons.dev)
+![Tech Stack](https://skillicons.dev/icons?i=nodejs,express,mongodb,postgres,vercel,firebase)
 
 - [Node.js](https://nodejs.org/)
 - [Express.js](https://expressjs.com/)
@@ -39,15 +53,7 @@
 - [Vercel](https://vercel.com/) (for deploying)
 - [Nodemailer](https://nodemailer.com/about/)
 - [Firebase Admin](https://github.com/firebase/firebase-admin-node) (for sending remote notification)
-- [sharp](https://www.npmjs.com/package/sharp) & [datauri](https://www.npmjs.com/package/datauri) (for converting image format)
-- and other npm packages ([morgan](https://www.npmjs.com/package/morgan), [dotenv](https://www.npmjs.com/package/dotenv), bcrypt, [cors](https://www.npmjs.com/package/cors), [multer](https://www.npmjs.com/package/multer))
-
-## Features
-
-- Upload Images
-- CRUD (Products, User, Transactions, Promo)
-- Whitelisting JWT
-- Remote Notification to Android & iOS App
+- and other packages (you can see in package.json)
 
 ## Getting Started
 
@@ -137,7 +143,7 @@ For MongoDB, You just setup and define it to env the database, it will be automa
 
 ## Related Projects
 
-- [jokopi-express](https://github.com/nyannss/jokopi-react) - React App
+- [jokopi-react](https://github.com/nyannss/jokopi-react) - React App
 - [jokopi-react-native](https://github.com/nyannss/jokopi-react-native) - Android & iOS Application
 
 ## Contributors
