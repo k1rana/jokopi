@@ -136,7 +136,7 @@ The REST API follows the principles of Representational State Transfer (REST), w
 
 ## Postman Documentation
 
-You can see the documentation from [Postman](https://elements.getpostman.com/redirect?entityId=26209677-a4d5190f-2074-486b-9977-e7fc0911b6d3&entityType=collection) or export it with [json file](/postman.json).
+You can see the documentation from [Postman](https://elements.getpostman.com/redirect?entityId=26209677-a4d5190f-2074-486b-9977-e7fc0911b6d3&entityType=collection) or import it with [json file](/postman.json).
 
 If you using json file, just open your postman and click import.
 
