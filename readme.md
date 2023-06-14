@@ -1,11 +1,12 @@
 <div align='center'>
 
 ![alt text](./public/icon.png "jokopi")
+[![Tech Stack](https://skillicons.dev/icons?i=nodejs,express,mongodb,postgres,vercel,firebase)](#tech-stack)
 
-<h1>jokopi.</h1>
+<h2>jokopi.</h2>
 <h3 align="center">Rest API for jokopi app!</h3>
 
-[Demo](https://jokopi-react.vercel.app/) · [Related Projects](#related-projects)
+[Demo](https://jokopi.vercel.app/) · [Related Projects](#related-projects)
 
 <h3 align="center">Powered by Vercel ⚡</h3>
 </div><br>
@@ -42,8 +43,6 @@ The REST API follows the principles of Representational State Transfer (REST), w
 
 ## Tech Stack
 
-![Tech Stack](https://skillicons.dev/icons?i=nodejs,express,mongodb,postgres,vercel,firebase)
-
 - [Node.js](https://nodejs.org/)
 - [Express.js](https://expressjs.com/)
 - [PostgreSQL](https://www.postgresql.org/) (for storing data)
@@ -51,7 +50,7 @@ The REST API follows the principles of Representational State Transfer (REST), w
 - [Cloudinary](https://cloudinary.com/) (for storing images)
 - [JSON Web Token](https://jwt.io/) (authorization)
 - [Vercel](https://vercel.com/) (for deploying)
-- [Nodemailer](https://nodemailer.com/about/)
+- [Nodemailer](https://nodemailer.com/about/) (email sender)
 - [Firebase Admin](https://github.com/firebase/firebase-admin-node) (for sending remote notification)
 - and other packages (you can see in package.json)
 
@@ -63,7 +62,7 @@ The REST API follows the principles of Representational State Transfer (REST), w
 - [PostgreSQL](https://www.postgresql.org/)
 - [MongoDB](https://www.mongodb.com/)
 - [Cloudinary](https://cloudinary.com/)
-- SMTP
+- [SMTP](https://nodemailer.com/usage/why-smtp/)
 - [Firebase Account](https://firebase.google.com/)
 
 ### Instalation & Environments
@@ -128,6 +127,12 @@ The REST API follows the principles of Representational State Transfer (REST), w
      ```env
      GOOGLE_APPLICATION_CREDENTIALS = (your encoded service-account.json content)
      ```
+
+4. Last, run the app
+
+   ```bash
+   npm run app
+   ```
 
 ## Postman Documentation
 
