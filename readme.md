@@ -1,6 +1,7 @@
 <div align='center'>
 
 ![alt text](./public/icon.png "jokopi")
+
 [![Tech Stack](https://skillicons.dev/icons?i=nodejs,express,mongodb,postgres,vercel,firebase)](#tech-stack)
 
 <h2>jokopi.</h2>
